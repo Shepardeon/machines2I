@@ -11,7 +11,7 @@ public class Client extends Point{
      */
     public Client(int demande, int id, int x, int y){
         super(id, x, y);
-        this.demande = demande;
+        this.request = request;
     }
 
     /**
@@ -20,6 +20,7 @@ public class Client extends Point{
     public int getDemande() {
         return demande;
     }
+
 
     @Override
     public String toString() {

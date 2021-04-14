@@ -2,6 +2,7 @@ package instance;
 
 import network.Client;
 import network.Depot;
+import network.Tech;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -11,18 +12,52 @@ public class Instance {
     /**
      * PARAMETRE
      */
+    private final String dataset;
     private final String nom;
-    private final int capacite;
+    private final int days;
+    private final int truckCapacity;
+    private final int truckDistanceCost;
+    private final int truckMaxDistance;
+    private final int truckDayCost;
+    private final int truckCost;
+    private final int technicianDistanceCost;
+    private final int technicianDayCost;
+    private final int technicianCost;
+    private final List<Tech> technicians;
+    private final List<Machine> machines;
     private final Depot depot;
     private final Map<Integer, Client> mapClients;
 
     /**
      * CONSTRUCTEUR
      */
-    public Instance(String nom, int capacite, Depot depot) {
+    public Instance(String dataset,
+                    String nom,
+                    int truckMaxDistance,
+                    int technicianCost,
+                    Depot depot,
+                    int days,
+                    int truckCapacity,
+                    int truckDistanceCost,
+                    int truckDayCost,
+                    int truckCost,
+                    int technicianDistanceCost,
+                    int technicianDayCost
+    ) {
+        this.dataset = dataset;
         this.nom = nom;
-        this.capacite = capacite;
         this.depot = depot;
+        this.technicianDistanceCost = technicianDistanceCost;
+        this.technicianDayCost = technicianDayCost;
+        this.technicianCost = technicianCost;
+        this.days = days;
+        this.technicians = new LinkedList<>();
+        this.machines = new LinkedList<>();
+        this.truckCapacity = truckCapacity;
+        this.truckDistanceCost = truckDistanceCost;
+        this.truckMaxDistance = truckMaxDistance;
+        this.truckDayCost = truckDayCost;
+        this.truckCost = truckCost;
         this.mapClients = new LinkedHashMap<>();
     }
 
@@ -31,10 +66,6 @@ public class Instance {
      */
     public String getNom() {
         return nom;
-    }
-
-    public int getCapacite() {
-        return capacite;
     }
 
     public Depot getDepot() {
@@ -80,6 +111,36 @@ public class Instance {
         client.ajouterRoute(depot);
         for (Client c : mapClients.values())
             client.ajouterRoute(c);
+        for (Tech t : technicians)
+            client.ajouterRoute(t);
+        return true;
+    }
+
+    /**
+     * Fonction qui ajoute un technician à la liste des technicians en créant toutes les routes nécessaires
+     * @param technician le technician à ajouter à la liste
+     * @return true si l'ajout a été effectué et false sinon
+     */
+    public boolean ajouterTech(Tech technician) {
+        if (technician == null || technicians.contains(technician))
+            return false;
+        technicians.add(technician);
+        for (Client c : mapClients.values())
+            technician.ajouterRoute(c);
+        for (Tech t : technicians)
+            technician.ajouterRoute(t);
+        return true;
+    }
+
+    /**
+     * Fonction qui ajoute une machine à la liste des machine
+     * @param machine la machine à ajouter à la liste
+     * @return true si l'ajout a été effectué et false sinon
+     */
+    public boolean ajouterMachine(Machine machine) {
+        if (machine == null || machines.contains(machine))
+            return false;
+        machines.add(machine);
         return true;
     }
 
@@ -87,9 +148,10 @@ public class Instance {
     public String toString() {
         return "Instance{" +
                 "nom='" + nom + '\'' +
-                ", capacite=" + capacite +
                 ", depot=" + depot +
                 ", mapClients=" + mapClients +
+                ", Techs=" + technicians +
+                ", machines=" + machines +
                 '}';
     }
 }
