@@ -27,8 +27,8 @@ public class Solution {
         instance = sol.instance;
         listeTournees= new LinkedList<>();
 
-        for (int i = 0; i < sol.listeTournees.size(); i++)
-            listeTournees.add(new Tournee(sol.listeTournees.get(i)));
+        /*for (int i = 0; i < sol.listeTournees.size(); i++)
+            listeTournees.add(new Tournee(sol.listeTournees.get(i)));*/
     }
 
     /*
@@ -42,13 +42,13 @@ public class Solution {
      * Fonction qui créer une nouvelle tournée et y ajoute un client
      * @param c le client à ajouter à la tournée
      */
-    public void ajouterClientNouvelleTournee(Client c) {
+    /*public void ajouterClientNouvelleTournee(Client c) {
         if (c == null) return;
         Tournee t = new Tournee(instance);
         t.ajouterClient(c);
         listeTournees.add(t);
         coutTotal += t.getCoutTotal();
-    }
+    }*/
 
     /**
      * Fonction qui ajoute un client à une tournée existante dans la liste des tournées

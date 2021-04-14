@@ -4,9 +4,7 @@ import network.Client;
 import network.Depot;
 import network.Tech;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class Instance {
     /**

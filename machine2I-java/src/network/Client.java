@@ -1,15 +1,17 @@
 package network;
 
+import instance.Request;
+
 public class Client extends Point{
     /**
      * PARAMETRES
      */
-    private final int demande;
+    private final Request request;
 
     /**
      * CONSTRUCTEUR
      */
-    public Client(int demande, int id, int x, int y){
+    public Client(Request request, int id, int x, int y){
         super(id, x, y);
         this.request = request;
     }
@@ -17,8 +19,8 @@ public class Client extends Point{
     /**
      * METHODES
      */
-    public int getDemande() {
-        return demande;
+    public Request getRequest() {
+        return request;
     }
 
 
