@@ -14,6 +14,4 @@ public class Machine {
          this.size = size;
          this.penalityCost = penalityCost;
     }
-
-
 }

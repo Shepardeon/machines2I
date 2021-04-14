@@ -25,7 +25,7 @@ public class Client extends Point{
     public String toString() {
         return "Client{" +
                 "point=" + super.toString() +
-                ", demande=" + demande +
+                ", demande=" + request +
                 '}';
     }
 }
