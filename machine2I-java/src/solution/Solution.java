@@ -3,6 +3,7 @@ package solution;
 import instance.Instance;
 import network.Client;
 
+import java.io.ObjectInputStream.GetField;
 import java.util.*;
 
 public class Solution {
@@ -11,24 +12,61 @@ public class Solution {
      */
     private int coutTotal;
     private final Instance instance;
-    private final LinkedList<Tournee> listeTournees;
+    private final Map<Integer,LinkedList<Tournee>> listeTournees;
+    private int truckDistance;
+    private int numberTruckDays;
+    private int numberTrucksUsed;
+    private int truckCost;
+    private int technicianDistance;
+    private int numberTechnicianDays;
+    private int numberTechniciansUsed;
+    private int technicianCost;
+    private int machineCost;
+    
 
     /*
      * CONSTRUCTEUR
      */
     public Solution(Instance instance) {
         this.coutTotal = 0;
+        this.truckCost = 0;
+        this.technicianCost = 0;
+        this.truckDistance = 0;
+        this.numberTruckDays = 0;
+        this.numberTrucksUsed = 0;
+        this.technicianDistance = 0;
+        this.numberTechnicianDays = 0;
+        this.numberTechniciansUsed = 0;
+        this.machineCost = 0;
         this.instance = instance;
-        this.listeTournees = new LinkedList<>();
+        this.listeTournees = new HashMap<Integer, LinkedList<Tournee>>();
     }
 
     public Solution(Solution sol) {
         coutTotal = sol.coutTotal;
         instance = sol.instance;
-        listeTournees= new LinkedList<>();
+        this.coutTotal = sol.coutTotal;
+        this.truckCost = sol.truckCost;
+        this.technicianCost = sol.technicianCost;
+        this.truckDistance = sol.truckDistance;
+        this.numberTruckDays = sol.numberTruckDays;
+        this.numberTrucksUsed = sol.numberTrucksUsed;
+        this.technicianDistance = sol.technicianDistance;
+        this.numberTechnicianDays = sol.numberTechnicianDays;
+        this.numberTechniciansUsed = sol.numberTechniciansUsed;
+        this.machineCost = sol.machineCost;
+        
+        listeTournees= new HashMap<Integer, LinkedList<Tournee>>();
 
-        /*for (int i = 0; i < sol.listeTournees.size(); i++)
-            listeTournees.add(new Tournee(sol.listeTournees.get(i)));*/
+        for (int i = 0; i < sol.listeTournees.size(); i++){
+        	LinkedList<Tournee> liste = new LinkedList<Tournee>();
+        	LinkedList<Tournee> copie = new LinkedList<Tournee>();
+        	liste = sol.listeTournees.get(i);
+        	for(Tournee tournee : liste){
+        		copie.add(new Tournee(tournee));
+        	}
+        	listeTournees.put(i, copie);
+        }
     }
 
     /*
@@ -38,15 +76,59 @@ public class Solution {
         return coutTotal;
     }
 
-    /**
+    public Instance getInstance(){
+    	return instance;
+    }
+    
+    public int getTruckDistance() {
+		return truckDistance;
+	}
+
+	public int getNumberTruckDays() {
+		return numberTruckDays;
+	}
+
+	public int getNumberTrucksUsed() {
+		return numberTrucksUsed;
+	}
+
+	public int getTruckCost() {
+		return truckCost;
+	}
+
+	public int getTechnicianDistance() {
+		return technicianDistance;
+	}
+
+	public int getNumberTechnicianDays() {
+		return numberTechnicianDays;
+	}
+
+	public int getNumberTechniciansUsed() {
+		return numberTechniciansUsed;
+	}
+
+	public int getTechnicianCost() {
+		return technicianCost;
+	}
+	
+	public int getMachineCost() {
+		return machineCost;
+	}
+
+	public Map<Integer, LinkedList<Tournee>> getListeTournees() {
+		return listeTournees;
+	}
+
+	/**
      * Fonction qui créer une nouvelle tournée et y ajoute un client
      * @param c le client à ajouter à la tournée
      */
-    /*public void ajouterClientNouvelleTournee(Client c) {
+    public void ajouterClientNouvelleTournee(Client c,int jour) {
         if (c == null) return;
         Tournee t = new Tournee(instance);
         t.ajouterClient(c);
-        listeTournees.add(t);
+        listeTournees.get(jour).add(t);
         coutTotal += t.getCoutTotal();
     }*/
 
@@ -55,9 +137,9 @@ public class Solution {
      * @param c le client à ajouter
      * @return true si l'ajout a été fait et false sinon
      */
-    public boolean ajouterClient(Client c) {
+    public boolean ajouterClient(Client c,int jour) {
         if (c == null) return false;
-        for (Tournee t : listeTournees) {
+        for (Tournee t : listeTournees.get(jour)) {
             if (addClient(c, t)) return true;
         }
         return false;
@@ -68,9 +150,9 @@ public class Solution {
      * @param c le client à ajouter
      * @return true si l'ajout a été fait et false sinon
      */
-    public boolean ajouterClientDerniereTournee(Client c) {
+    public boolean ajouterClientDerniereTournee(Client c, int jour) {
         if (c == null || listeTournees.isEmpty()) return false;
-        Tournee t = listeTournees.getLast();
+        Tournee t = listeTournees.get(jour).getLast();
         return addClient(c, t);
     }
 
@@ -224,11 +306,15 @@ public class Solution {
      * @return true si toutes les tournées sont réalisables et false sinon
      */
     private boolean checkTourneesRealisables() {
-        for (int i = 0; i < listeTournees.size(); i++)
-            if (!listeTournees.get(i).check()) {
-                System.out.println("Erreur Test checkTourneesRealisables:\n\tErreur dans la tournée n°" + i);
-                return false;
+        for (int i = 0; i <= listeTournees.size(); i++){
+        	LinkedList<Tournee> liste = listeTournees.get(i);
+        	for (Tournee t : liste) {
+	            if (!t.check()) {
+	                System.out.println("Erreur Test checkTourneesRealisables:\n\tErreur dans la tournée n°" + i);
+	                return false;
+	            }
             }
+        }
         return true;
     }
 
@@ -238,10 +324,12 @@ public class Solution {
      */
     private boolean checkCoutTotal() {
         int cTotal = 0;
-        for (Tournee t : listeTournees) {
-            cTotal += t.getCoutTotal();
+        for(int i = 1; i <= listeTournees.size(); i++){
+        	LinkedList<Tournee> liste = listeTournees.get(i);
+	        for (Tournee t : liste) {
+	            cTotal += t.getCoutTotal();
+	        }
         }
-
         boolean test = cTotal == coutTotal;
         if (!test)
             System.out.println("Erreur Test checkCoutTotal:\n\tdeltaCout total théorique: " + cTotal +
@@ -252,8 +340,13 @@ public class Solution {
     private boolean checkClientUnique() {
         LinkedList<Client> listClient = new LinkedList<>();
 
-        for (Tournee t : listeTournees)
-            listClient.addAll(t.getListClient());
+
+        for(int i = 1; i <= listeTournees.size(); i++){
+        	LinkedList<Tournee> liste = listeTournees.get(i);
+	        for (Tournee t : liste) {
+	            listClient.addAll(t.getListClient());
+	        }
+        }
 
         for (Client c : instance.getClients()) {
             if (Collections.frequency(listClient, c) != 1) {
