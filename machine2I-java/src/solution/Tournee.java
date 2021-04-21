@@ -53,7 +53,7 @@ public abstract class Tournee {
         return coutTotal;
     }
 
-    public LinkedList<Client> getListClient() {
+    public LinkedList<Request> getListRequest() {
         return listRequest;
     }
 
@@ -70,7 +70,7 @@ public abstract class Tournee {
      * @param pos la position du client à récupérer
      * @return le client à la position pos ou null
      */
-    public Client getClientAt(int pos) {
+    public Request getRequestAt(int pos) {
         if (pos < 0 || pos >= listRequest.size()) return null;
         return listRequest.get(pos);
     }
@@ -106,7 +106,7 @@ public abstract class Tournee {
         int cTotal = 0;
         for (int i = 0; i < listRequest.size() - 1; i++) {
             // On calcul les liens entre tous les clients
-            cTotal += listRequest.get(i).getCoutVers(listRequest.get(i+1).getClient());
+            cTotal += listRequest.get(i).getClient().getCoutVers(listRequest.get(i+1).getClient());
         }
         // On ajoute les liens entre le premier et dernier points au dépôt
         cTotal += depot.getCoutVers(listRequest.getFirst().getClient()) + listRequest.getLast().getClient().getCoutVers(depot);
@@ -346,7 +346,6 @@ public abstract class Tournee {
         return "Tournee{" +
                 ", demandeTotale=" + demandeTotale +
                 ", coutTotal=" + coutTotal +
-                ", listClient=" + listClient +
                 '}';
     }
 }

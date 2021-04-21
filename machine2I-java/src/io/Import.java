@@ -252,7 +252,7 @@ public class Import {
         String[] val = line.strip().split("\\s+|\t+");
 
         if (val.length != 3) {
-            System.out.println("Something went wrong, a machine data has been dropped");
+            System.out.println("Nothing to see here, line is certainly empty");
             return null;
         }
         System.out.printf("WHOOP WHOOP I READ MACHINES");
@@ -270,7 +270,7 @@ public class Import {
         String[] val = line.strip().split("\\s+|\t+");
 
         if (val.length != 3) {
-            System.out.println("Something went wrong, a Point data has been dropped");
+            System.out.println("Nothing to see here, line is certainly empty");
             return null;
         }
 
@@ -287,7 +287,7 @@ public class Import {
         String[] val = line.strip().split("\\s+|\t+");
 
         if (val.length != 6) {
-            System.out.println("Something went wrong, a Client data has been dropped");
+            System.out.println("Nothing to see here, line is certainly empty");
             return null;
         }
 
@@ -309,8 +309,8 @@ public class Import {
 
         String[] val = line.strip().split("\\s+|\t+");
 
-        if (val.length <= 4 + machines.size()) {
-            System.out.println("Something went wrong, a Technician data has been dropped");
+        if (val.length < 4 + machines.size()) {
+            System.out.println("Nothing to see here, line is certainly empty, Tech");
             return null;
         }
 

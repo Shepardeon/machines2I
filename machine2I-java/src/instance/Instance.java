@@ -1,5 +1,6 @@
 package instance;
 
+import instance.Request;
 import network.Client;
 import network.Depot;
 import network.Tech;
@@ -84,6 +85,10 @@ public class Instance {
      */
     public int getNbClients() {
         return mapClients.size();
+    }
+
+    public List<Tech> getTechs() {
+        return technicians;
     }
 
     /**

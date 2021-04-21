@@ -1,6 +1,7 @@
 package solution;
 
 import instance.Instance;
+import instance.Request;
 import network.Client;
 
 import java.io.ObjectInputStream.GetField;
@@ -29,6 +30,7 @@ public class Solution {
     public Solution(Instance instance) {
         this.coutTotal = 0;
         this.truckCost = 0;
+        this.techCost = 0;
         this.technicianCost = 0;
         this.truckDistance = 0;
         this.numberTruckDays = 0;
@@ -44,7 +46,7 @@ public class Solution {
     public Solution(Solution sol) {
         coutTotal = sol.coutTotal;
         instance = sol.instance;
-        this.coutTotal = sol.coutTotal;
+        this.techCost = sol.techCost;
         this.truckCost = sol.truckCost;
         this.technicianCost = sol.technicianCost;
         this.truckDistance = sol.truckDistance;
@@ -159,13 +161,29 @@ public class Solution {
      * Fonction qui créer une nouvelle tournée et y ajoute un client
      * @param c le client à ajouter à la tournée
      */
-    public void ajouterClientNouvelleTournee(Client c,int jour) {
-        if (c == null) return;
-        Tournee t = new Tournee(instance);
-        t.ajouterClient(c);
+    public boolean ajouterClientNouvelleTourneeTruck(Request r, int jour) {
+        if (r == null) return false;
+        Tournee t = new TourneeTruck(instance);
+        if(!t.ajouterRequest(r)){
+            return false;
+        }
         listeTournees.get(jour).add(t);
+        truckCost += t.getCoutTotal();
         coutTotal += t.getCoutTotal();
-    }*/
+        return true;
+    }
+
+    public boolean ajouterClientNouvelleTourneeTech(Request r, int jour) {
+        if (r == null) return false;
+        Tournee t = new TourneeTech(instance);
+        if(!t.ajouterRequest(r)){
+            return false;
+        }
+        listeTournees.get(jour).add(t);
+        techCost += t.getCoutTotal();
+        coutTotal += t.getCoutTotal();
+        return true;
+    }
 
     /**
      * Fonction qui ajoute un client à une tournée existante dans la liste des tournées
@@ -178,11 +196,12 @@ public class Solution {
             if (addClient(r, t)) return true;
         }
         return false;
-    }
+    }*/
 
     /**
      * Fonction qui ajoute un client à la dernière tournée de la liste des tournées
-     * @param c le client à ajouter
+     * @param r le client à ajouter
+     * @param jour
      * @return true si l'ajout a été fait et false sinon
      */
     public boolean ajouterClientDerniereTournee(Request r, int jour) {
@@ -333,7 +352,7 @@ public class Solution {
      * @return true si la solution est réalisable et false sinon
      */
     public boolean check() {
-        return checkTourneesRealisables() && checkCoutTotal() && checkClientUnique();
+        return checkTourneesRealisables() && checkCoutTotal() && checkRequestUnique();
     }
 
     /**
@@ -372,8 +391,8 @@ public class Solution {
         return test;
     }
 
-    private boolean checkClientUnique() {
-        LinkedList<Client> listClient = new LinkedList<>();
+    private boolean checkRequestUnique() {
+        LinkedList<Request> listRequest = new LinkedList<Request>();
 
 
         for(int i = 1; i <= listeTournees.size(); i++){
@@ -383,9 +402,9 @@ public class Solution {
             }
         }
 
-        for (Client c : instance.getClients()) {
-            if (Collections.frequency(listClient, c) != 1) {
-                System.out.println("Erreur Test checkClientUnique:\n\tClient ingoré ou présent dans plus d'une tournée!");
+        for (Request r : instance.getRequests()) {
+            if (Collections.frequency(listRequest, r) != 1) {
+                System.out.println("Erreur Test CheckRequéteUnique :\n\t Requete ingoré ou présent dans plus d'une tournée!");
                 return false;
             }
         }

@@ -1,7 +1,12 @@
 package solution;
 
 import instance.Instance;
+import instance.Machine;
+import instance.Request;
 import network.Client;
+
+import java.util.LinkedList;
+import java.util.Map;
 
 public class TourneeTruck extends Tournee {
     private int capacity;
@@ -31,8 +36,8 @@ public class TourneeTruck extends Tournee {
     @Override
     public boolean checkCalculerDemandeTotale() {
         int dTotale = 0;
-        for (Client c : this.getListClient()) {
-            dTotale += c.getRequest().getNbMachine();
+        for (Request r : this.getListRequest()) {
+            dTotale += r.getNbMachine();
         }
 
         boolean test = dTotale == this.getDemandeTotale();

@@ -1,6 +1,8 @@
 package solution;
 
 import instance.Instance;
+import instance.Request;
+import network.Tech;
 import network.Client;
 import network.Point;
 
