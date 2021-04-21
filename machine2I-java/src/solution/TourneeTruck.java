@@ -4,23 +4,27 @@ import instance.Instance;
 import network.Client;
 
 public class TourneeTruck extends Tournee {
-
-    public TourneeTruck() {
-        super();
-    }
+    private int capacity;
+    private int maxCapacity;
+    private Map<Integer, Machine> mapMachines;
 
     public TourneeTruck(Instance instance) {
         super(instance);
+        this.depot = instance.getDepot();
+        this.capacity = instance.getTruckCapacity();
+        this.mapMachines = instance.getMapMachines();
     }
 
     public TourneeTruck(Tournee tournee) {
         super(tournee);
     }
 
-
-
     @Override
-    public boolean ajouterClient(Client client) {
+    public boolean ajouterRequest(Request request) {
+        if(canInsererRequest(request)){
+            this.listRequest.add(request);
+            return true;
+        }
         return false;
     }
 
@@ -39,7 +43,10 @@ public class TourneeTruck extends Tournee {
     }
 
     @Override
-    public boolean canInsererClient(Client client) {
+    public boolean canInsererRequest(Request request) {
+        if( capacity + mapMachines.get(request.getIdMachine()).getSize() * request.getNbMachine() > maxCapacity){
+
+        }
         return false;
     }
 

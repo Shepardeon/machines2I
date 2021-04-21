@@ -4,21 +4,30 @@ import instance.Machine;
 
 import java.util.List;
 
-public class Tech extends Depot {
+public class Tech {
 
     private int idTechnician;
     private int maxDistance;
     private int maxDemande;
     private List<Integer> machines;
+    private Depot depot;
 
     /**
      * CONSTRUCTEUR
      */
     public Tech(int id, int x, int y, int idTechnician, int maxDistance, int maxDemande, List<Integer> machines) {
-        super(id, x, y);
+        depot = new Depot(id, x, y);
         this.idTechnician = idTechnician;
         this.maxDistance = maxDistance;
         this.maxDemande = maxDemande;
         this.machines = machines;
+    }
+
+    public Depot getDepot(){
+        return depot;
+    }
+
+    public int getIdTechnician(){
+        return idTechnician;
     }
 }

@@ -70,6 +70,14 @@ public class Instance {
         return depot;
     }
 
+    public String getDataset() { return dataset; }
+
+    public int getDays() { return days; }
+
+    public int getTruckCapacity(){ return truckCapacity; }
+
+    public Map<Integer, Machine> getMapMachines(){ return mapMachines; }
+
     /**
      * Fonction qui renvoie le nombre de client dans cette instance
      * @return le nombre de clients
@@ -110,7 +118,7 @@ public class Instance {
         for (Client c : mapClients.values())
             client.ajouterRoute(c);
         for (Tech t : technicians)
-            client.ajouterRoute(t);
+            client.ajouterRoute(t.getDepot());
         return true;
     }
 
@@ -124,9 +132,9 @@ public class Instance {
             return false;
         technicians.add(technician);
         for (Client c : mapClients.values())
-            technician.ajouterRoute(c);
+            technician.getDepot().ajouterRoute(c);
         for (Tech t : technicians)
-            technician.ajouterRoute(t);
+            technician.getDepot().ajouterRoute(t.getDepot());
         return true;
     }
 

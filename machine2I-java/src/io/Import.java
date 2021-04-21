@@ -322,6 +322,8 @@ public class Import {
         int maxDist = Integer.parseInt(val[2]);
         int maxReq = Integer.parseInt(val[3]);
 
+        System.out.println(idPoint);
+
         List<Integer> abilities = new ArrayList<>();
         for (int i = 4; i < val.length; i++)
             abilities.add(Integer.parseInt(val[i]));

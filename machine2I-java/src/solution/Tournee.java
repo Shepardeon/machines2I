@@ -14,10 +14,10 @@ public abstract class Tournee {
     /*
      * PARAMETRE
      */
-    private int demandeTotale;
-    private int coutTotal;
-    private Depot depot;
-    private final LinkedList<Request> listRequest;
+    protected int demandeTotale;
+    protected int coutTotal;
+    protected Depot depot;
+    protected final LinkedList<Request> listRequest;
 
     /*
      * CONSTRUCTEUR
@@ -33,14 +33,12 @@ public abstract class Tournee {
     public Tournee() {
         this.demandeTotale = 0;
         this.coutTotal = 0;
-        depot = null;
         this.listRequest = new LinkedList<Request>();
     }
 
     public Tournee(Instance instance) {
         this.demandeTotale = 0;
         this.coutTotal = 0;
-        depot = instance.getDepot();
         this.listRequest = new LinkedList<Request>();
     }
     /*
@@ -63,6 +61,10 @@ public abstract class Tournee {
         return listRequest.isEmpty();
     }
 
+    public Depot getDepot(){
+        return this.depot;
+    };
+
     /**
      * Fonction qui renvoie le client à la position pos de la liste de clients
      * @param pos la position du client à récupérer
@@ -75,17 +77,17 @@ public abstract class Tournee {
 
     /**
      * Fonction qui ajoute un client à la tournée
-     * @param client le client à ajouter à la tournée
+     * @param request le client à ajouter à la tournée
      * @return true si l'ajout a pu se faire et false sinon
      */
-    public abstract boolean ajouterClient(Client client);
+    public abstract boolean ajouterRequest(Request request);
 
     /**
      * Fonction testant la possibilité d'insérer un client
-     * @param client le client à insérer
+     * @param request le client à insérer
      * @return true si le client peut être inséré et false sinon
     */
-    public abstract boolean canInsererClient(Client client);
+    public abstract boolean canInsererRequest(Request request);
 
     public abstract boolean check();
 

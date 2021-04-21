@@ -22,7 +22,6 @@ public class Solution {
     private int numberTechniciansUsed;
     private int technicianCost;
     private int machineCost;
-    
 
     /*
      * CONSTRUCTEUR
@@ -59,13 +58,13 @@ public class Solution {
         listeTournees= new HashMap<Integer, LinkedList<Tournee>>();
 
         for (int i = 0; i < sol.listeTournees.size(); i++){
-        	LinkedList<Tournee> liste = new LinkedList<Tournee>();
-        	LinkedList<Tournee> copie = new LinkedList<Tournee>();
-        	liste = sol.listeTournees.get(i);
-        	for(Tournee tournee : liste){
-        		copie.add(new Tournee(tournee));
-        	}
-        	listeTournees.put(i, copie);
+            LinkedList<Tournee> liste = new LinkedList<Tournee>();
+            LinkedList<Tournee> copie = new LinkedList<Tournee>();
+            liste = sol.listeTournees.get(i);
+            for(Tournee tournee : liste){
+                //copie.add(new Tournee(tournee));
+            }
+            listeTournees.put(i, copie);
         }
     }
 
@@ -74,6 +73,42 @@ public class Solution {
      */
     public int getCoutTotal() {
         return coutTotal;
+    }
+
+    public int getTruckDistance(){
+        return this.truckDistance;
+    }
+
+    public int getNumberTruckDays(){
+        return this.numberTruckDays;
+    }
+
+    public int getNumberTrucksUsed(){
+        return this.numberTrucksUsed;
+    }
+
+    public int getTechnicianDistance(){
+        return this.technicianDistance;
+    }
+
+    public int getNumberTechnicianDays(){
+        return this.numberTechnicianDays;
+    }
+
+    public int getNumberTechniciansUsed(){
+        return this.numberTechniciansUsed;
+    }
+
+    public int getMachineCost(){
+        return this.machineCost;
+    }
+
+    public Instance getInstance(){
+        return this.instance;
+    }
+
+    public Map<Integer,LinkedList<Tournee>> getListeTournees(){
+        return this.listeTournees;
     }
 
     public Instance getInstance(){
@@ -134,13 +169,13 @@ public class Solution {
 
     /**
      * Fonction qui ajoute un client à une tournée existante dans la liste des tournées
-     * @param c le client à ajouter
+     * @param r le client à ajouter
      * @return true si l'ajout a été fait et false sinon
      */
-    public boolean ajouterClient(Client c,int jour) {
-        if (c == null) return false;
+    /*public boolean ajouterRequest(Request r,int jour) {
+        if (r == null) return false;
         for (Tournee t : listeTournees.get(jour)) {
-            if (addClient(c, t)) return true;
+            if (addClient(r, t)) return true;
         }
         return false;
     }
@@ -150,21 +185,21 @@ public class Solution {
      * @param c le client à ajouter
      * @return true si l'ajout a été fait et false sinon
      */
-    public boolean ajouterClientDerniereTournee(Client c, int jour) {
-        if (c == null || listeTournees.isEmpty()) return false;
+    public boolean ajouterClientDerniereTournee(Request r, int jour) {
+        if (r == null || listeTournees.isEmpty()) return false;
         Tournee t = listeTournees.get(jour).getLast();
-        return addClient(c, t);
+        return addRequest(r, t);
     }
 
     /**
      * Fonction qui ajoute un client à une tournée donnée
-     * @param c le client à ajouter
+     * @param r le client à ajouter
      * @param t la tournée à laquelle ajouter un client
      * @return true si l'ajout a eu lieux et false sinon
      */
-    private boolean addClient(Client c, Tournee t) {
+    private boolean addRequest(Request r, Tournee t) {
         int oldCout = t.getCoutTotal();
-        if (t.ajouterClient(c)) {
+        if (t.ajouterRequest(r)) {
             coutTotal += t.getCoutTotal() - oldCout;
             return true;
         }
@@ -307,12 +342,12 @@ public class Solution {
      */
     private boolean checkTourneesRealisables() {
         for (int i = 0; i <= listeTournees.size(); i++){
-        	LinkedList<Tournee> liste = listeTournees.get(i);
-        	for (Tournee t : liste) {
-	            if (!t.check()) {
-	                System.out.println("Erreur Test checkTourneesRealisables:\n\tErreur dans la tournée n°" + i);
-	                return false;
-	            }
+            LinkedList<Tournee> liste = listeTournees.get(i);
+            for (Tournee t : liste) {
+                if (!t.check()) {
+                    System.out.println("Erreur Test checkTourneesRealisables:\n\tErreur dans la tournée n°" + i);
+                    return false;
+                }
             }
         }
         return true;
@@ -325,10 +360,10 @@ public class Solution {
     private boolean checkCoutTotal() {
         int cTotal = 0;
         for(int i = 1; i <= listeTournees.size(); i++){
-        	LinkedList<Tournee> liste = listeTournees.get(i);
-	        for (Tournee t : liste) {
-	            cTotal += t.getCoutTotal();
-	        }
+            LinkedList<Tournee> liste = listeTournees.get(i);
+            for (Tournee t : liste) {
+                cTotal += t.getCoutTotal();
+            }
         }
         boolean test = cTotal == coutTotal;
         if (!test)
@@ -342,10 +377,10 @@ public class Solution {
 
 
         for(int i = 1; i <= listeTournees.size(); i++){
-        	LinkedList<Tournee> liste = listeTournees.get(i);
-	        for (Tournee t : liste) {
-	            listClient.addAll(t.getListClient());
-	        }
+            LinkedList<Tournee> liste = listeTournees.get(i);
+            for (Tournee t : liste) {
+                listRequest.addAll(t.getListRequest());
+            }
         }
 
         for (Client c : instance.getClients()) {
