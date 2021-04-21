@@ -4,7 +4,6 @@ import instance.Instance;
 import instance.Request;
 import network.Client;
 
-import java.io.ObjectInputStream.GetField;
 import java.util.*;
 
 public class Solution {
@@ -14,6 +13,7 @@ public class Solution {
     private int coutTotal;
     private final Instance instance;
     private final Map<Integer,LinkedList<Tournee>> listeTournees;
+    private int techCost;
     private int truckDistance;
     private int numberTruckDays;
     private int numberTrucksUsed;
@@ -56,8 +56,7 @@ public class Solution {
         this.numberTechnicianDays = sol.numberTechnicianDays;
         this.numberTechniciansUsed = sol.numberTechniciansUsed;
         this.machineCost = sol.machineCost;
-        
-        listeTournees= new HashMap<Integer, LinkedList<Tournee>>();
+        this.listeTournees = new HashMap<Integer, LinkedList<Tournee>>();
 
         for (int i = 0; i < sol.listeTournees.size(); i++){
             LinkedList<Tournee> liste = new LinkedList<Tournee>();
@@ -68,6 +67,8 @@ public class Solution {
             }
             listeTournees.put(i, copie);
         }
+        /*for (int i = 0; i < sol.listeTournees.size(); i++)
+            listeTournees.add(new Tournee(sol.listeTournees.get(i)));*/
     }
 
     /*
@@ -113,53 +114,9 @@ public class Solution {
         return this.listeTournees;
     }
 
-    public Instance getInstance(){
-    	return instance;
-    }
-    
-    public int getTruckDistance() {
-		return truckDistance;
-	}
-
-	public int getNumberTruckDays() {
-		return numberTruckDays;
-	}
-
-	public int getNumberTrucksUsed() {
-		return numberTrucksUsed;
-	}
-
-	public int getTruckCost() {
-		return truckCost;
-	}
-
-	public int getTechnicianDistance() {
-		return technicianDistance;
-	}
-
-	public int getNumberTechnicianDays() {
-		return numberTechnicianDays;
-	}
-
-	public int getNumberTechniciansUsed() {
-		return numberTechniciansUsed;
-	}
-
-	public int getTechnicianCost() {
-		return technicianCost;
-	}
-	
-	public int getMachineCost() {
-		return machineCost;
-	}
-
-	public Map<Integer, LinkedList<Tournee>> getListeTournees() {
-		return listeTournees;
-	}
-
-	/**
-     * Fonction qui créer une nouvelle tournée et y ajoute un client
-     * @param c le client à ajouter à la tournée
+    /**
+     * Fonction qui créer une nouvelle tournéeTruck et y ajoute un client
+     * @param r la request à ajouter à la tournée
      */
     public boolean ajouterClientNouvelleTourneeTruck(Request r, int jour) {
         if (r == null) return false;
@@ -393,7 +350,6 @@ public class Solution {
 
     private boolean checkRequestUnique() {
         LinkedList<Request> listRequest = new LinkedList<Request>();
-
 
         for(int i = 1; i <= listeTournees.size(); i++){
             LinkedList<Tournee> liste = listeTournees.get(i);

@@ -81,7 +81,7 @@ public class Import {
             int techCost                   = readTechCost(br);
             List<Machine> machines         = readMachines(br);
             Map<Integer, Point> points     = readPoints(br);
-            List<Client> clients           = readRequests(br, points);
+            List<Request> requests         = readRequests(br, points);
             List<Tech> techs               = readTechs(br, points, machines);
 
             Point d = points.get(1);
@@ -100,8 +100,8 @@ public class Import {
                     techDayCost
             );
 
-            for (Client c : clients)
-                instance.ajouterClient(c);
+            for (Request r : requests)
+                instance.ajouterRequest(r);
 
             for (Tech t : techs)
                 instance.ajouterTech(t);
@@ -125,14 +125,14 @@ public class Import {
         String line = br.readLine();
         while(!line.contains("DATASET ="))
             line = br.readLine();
-        return line.replace(" ", "").replace("DATASET=", "");
+        return line.replace("DATASET = ", "");
     }
 
     private String readName(BufferedReader br) throws IOException {
         String line = br.readLine();
         while(!line.contains("NAME ="))
             line = br.readLine();
-        return line.replace(" ", "").replace("NAME=", "");
+        return line.replace("NAME = ", "");
     }
 
     private int readDays(BufferedReader br) throws IOException {
@@ -201,7 +201,12 @@ public class Import {
     private List<Machine> readMachines(BufferedReader br) throws IOException {
         List<Machine> machines = new ArrayList<>();
         String line = br.readLine();
-        while(!line.contains("MACHINES =")) {
+
+        while(!line.contains("MACHINES =")){
+            line = br.readLine();
+        }
+        line = br.readLine();
+        while(!line.contains("LOCATIONS =")) {
             Machine m = readMachine(line);
             if (m != null)
                 machines.add(m);
@@ -212,35 +217,38 @@ public class Import {
 
     private Map<Integer,Point> readPoints(BufferedReader br) throws IOException {
         Map<Integer, Point> points = new LinkedHashMap<>();
-        String ligne = br.readLine();
-        while(!ligne.contains("LOCATIONS =")) {
-            Point p = readPoint(ligne);
+        String line = br.readLine();
+
+        while(!line.contains("REQUESTS =")) {
+            Point p = readPoint(line);
             if (p != null)
                 points.put(p.getId(), p);
-            ligne = br.readLine();
+            line = br.readLine();
         }
         return points;
     }
 
-    private List<Client> readRequests(BufferedReader br, Map<Integer, Point> points) throws IOException {
-        List<Client> clients = new ArrayList<>();
+    private List<Request> readRequests(BufferedReader br, Map<Integer, Point> points) throws IOException {
+        List<Request> requests = new ArrayList<>();
         String line = br.readLine();
-        while(!line.contains("REQUESTS =")) {
-            Client c = readClient(line, points);
-            if (c != null)
-                clients.add(c);
+
+        while(!line.contains("TECHNICIANS =")) {
+            Request r = readRequest(line, points);
+            if (r != null)
+                requests.add(r);
             line = br.readLine();
         }
-        return clients;
+        return requests;
     }
 
     private List<Tech> readTechs(BufferedReader br, Map<Integer, Point> points, List<Machine> machines) throws IOException {
         List<Tech> techs = new ArrayList<>();
         String line = br.readLine();
-        while(!line.contains("REQUESTS =")) {
+
+        while(line != null) {
             Tech t = readTech(line, points, machines);
             if (t != null)
-                techs.add(t);
+                System.out.println(techs.add(t));
             line = br.readLine();
         }
         return techs;
@@ -255,7 +263,6 @@ public class Import {
             System.out.println("Nothing to see here, line is certainly empty");
             return null;
         }
-        System.out.printf("WHOOP WHOOP I READ MACHINES");
 
         int id      = Integer.parseInt(val[0]);
         int size    = Integer.parseInt(val[1]);
@@ -278,10 +285,10 @@ public class Import {
         int x  = Integer.parseInt(val[1]);
         int y  = Integer.parseInt(val[2]);
 
-        return new Client(null, id, x, y);
+        return new Client(id, x, y);
     }
 
-    private Client readClient(String line, Map<Integer, Point> points) throws IOException {
+    private Request readRequest(String line, Map<Integer, Point> points) throws IOException {
         if (line.isEmpty() || line.isBlank()) return null;
 
         String[] val = line.strip().split("\\s+|\t+");
@@ -299,9 +306,9 @@ public class Import {
         int nbMachine = Integer.parseInt(val[5]);
 
         Point p   = points.get(idClient);
-        Request r = new Request(id, idClient, dayOne, lastDay, idMachine, nbMachine);
+        Client c = new Client(p.getId(), p.getX(), p.getY());
 
-        return new Client(r, p.getId(), p.getX(), p.getY());
+        return new Request(id, c, dayOne, lastDay, idMachine, nbMachine);
     }
 
     private Tech readTech(String line, Map<Integer, Point> points, List<Machine> machines) throws IOException {
@@ -313,9 +320,6 @@ public class Import {
             System.out.println("Nothing to see here, line is certainly empty, Tech");
             return null;
         }
-
-        System.out.println(machines.size());
-        System.out.println(line);
 
         int id = Integer.parseInt(val[0]);
         int idPoint = Integer.parseInt(val[1]);
@@ -335,9 +339,14 @@ public class Import {
 
     public static void main(String[] args) {
         try {
-            Import reader = new Import("instances/ORTEC-early/VSC2019_ORTEC_early_01.txt");
-            reader.readInstance();
+            Import reader = new Import("instances/inst-test.txt");
+            Instance i = reader.readInstance();
             System.out.println("Instance lue avec success !");
+            System.out.println("Num request = " + i.getRequests().size());
+            System.out.println("Num clients = " + i.getNbClients());
+            System.out.println("Num tech = " + i.getTechs().size());
+
+            System.out.println(i);
         } catch (ReaderException ex) {
             System.out.println(ex.getMessage());
         }

@@ -1,7 +1,5 @@
 package network;
 
-import instance.Machine;
-
 import java.util.List;
 
 public class Tech {

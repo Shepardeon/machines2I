@@ -1,0 +1,36 @@
+DATASET = GGK's insts
+NAME = Instance 1
+
+DAYS = 15
+TRUCK_CAPACITY = 18
+TRUCK_MAX_DISTANCE = 960
+
+TRUCK_DISTANCE_COST = 100000
+TRUCK_DAY_COST = 100
+TRUCK_COST = 1000
+TECHNICIAN_DISTANCE_COST = 10
+TECHNICIAN_DAY_COST = 10000
+TECHNICIAN_COST = 10
+
+MACHINES = 1
+    1     7   355
+
+LOCATIONS = 6
+    1   318   455
+    2   239   318
+    3   320   388
+    4   702   558
+    5   477   328
+    6   320   410
+
+REQUESTS = 5
+    1     1     1     2     3     2
+    2     2     1     5     1     2
+    3     4     1     5     3     3
+    4     3     1     6     2     2
+    5     5     1     5     2     1
+
+TECHNICIANS = 1
+    1    6   455    10  1
+
+

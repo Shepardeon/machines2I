@@ -10,4 +10,25 @@ public class Machine {
          this.size = size;
          this.penalityCost = penalityCost;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public int getPenalityCost() {
+        return penalityCost;
+    }
+
+    @Override
+    public String toString() {
+        return "Machine{" +
+                "id=" + id +
+                ", size=" + size +
+                ", penalityCost=" + penalityCost +
+                '}';
+    }
 }

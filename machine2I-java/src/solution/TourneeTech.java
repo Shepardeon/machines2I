@@ -38,8 +38,10 @@ public class TourneeTech extends Tournee {
     @Override
     public boolean checkCalculerDemandeTotale() {
         return false;
-    }@Override
-    public boolean canInsererClient(Client client) {
+    }
+
+    @Override
+    public boolean canInsererRequest(Request request) {
         return false;
     }
 

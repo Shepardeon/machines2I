@@ -27,7 +27,7 @@ public class Export {
 	}
 	
 	public boolean ExporterSolution(){
-		File monFichier = new File("solution.txt");
+		File monFichier = new File("solutions/solution.txt");
 		try{
 			if(monFichier.createNewFile())
 				System.out.println("création du fichier solution.txt");
@@ -87,6 +87,7 @@ public class Export {
 
 			writer.close();
 		}catch(Exception e){
+			e.printStackTrace();
 			System.err.println(e);
 			return false;
 		}

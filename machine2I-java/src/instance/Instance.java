@@ -23,9 +23,10 @@ public class Instance {
     private final int technicianDayCost;
     private final int technicianCost;
     private final List<Tech> technicians;
-    private final List<Machine> machines;
+    private final Map<Integer, Machine> mapMachines;
     private final Depot depot;
     private final Map<Integer, Client> mapClients;
+    private final Map<Integer, Request> mapRequests;
 
     /**
      * CONSTRUCTEUR
@@ -51,13 +52,14 @@ public class Instance {
         this.technicianCost = technicianCost;
         this.days = days;
         this.technicians = new LinkedList<>();
-        this.machines = new LinkedList<>();
+        this.mapMachines = new LinkedHashMap<>();
         this.truckCapacity = truckCapacity;
         this.truckDistanceCost = truckDistanceCost;
         this.truckMaxDistance = truckMaxDistance;
         this.truckDayCost = truckDayCost;
         this.truckCost = truckCost;
         this.mapClients = new LinkedHashMap<>();
+        this.mapRequests = new LinkedHashMap<>();
     }
 
     /**
@@ -109,6 +111,14 @@ public class Instance {
     }
 
     /**
+     * Fonction pour récupérer la liste de toutes les requests de l'instance
+     * @return une LinkedList, copie de la liste des requests
+     */
+    public LinkedList<Request> getRequests() {
+        return new LinkedList<>(mapRequests.values());
+    }
+
+    /**
      * Fonction qui ajoute un client à la liste des clients en créant toutes les routes nécessaires entre ce client,
      * lee dépot et les autres clients
      * @param client le client à ajouter à la liste
@@ -124,6 +134,17 @@ public class Instance {
             client.ajouterRoute(c);
         for (Tech t : technicians)
             client.ajouterRoute(t.getDepot());
+        return true;
+    }
+
+    public boolean ajouterRequest(Request request) {
+        if (request == null || mapRequests.containsValue(request))
+            return false;
+
+        mapRequests.put(request.getId(), request);
+        ajouterClient(request.getClient());
+        request.getClient().ajouterRequest(request);
+
         return true;
     }
 
@@ -149,9 +170,9 @@ public class Instance {
      * @return true si l'ajout a été effectué et false sinon
      */
     public boolean ajouterMachine(Machine machine) {
-        if (machine == null || machines.contains(machine))
+        if (machine == null || mapMachines.containsValue(machine))
             return false;
-        machines.add(machine);
+        mapMachines.put(machine.getId(), machine);
         return true;
     }
 
@@ -162,7 +183,7 @@ public class Instance {
                 ", depot=" + depot +
                 ", mapClients=" + mapClients +
                 ", Techs=" + technicians +
-                ", machines=" + machines +
+                ", machines=" + mapMachines +
                 '}';
     }
 }

@@ -2,33 +2,38 @@ package network;
 
 import instance.Request;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Client extends Point{
     /**
      * PARAMETRES
      */
-    private final Request request;
+    private List<Request> listRequests;
 
     /**
      * CONSTRUCTEUR
      */
-    public Client(Request request, int id, int x, int y){
+    public Client(int id, int x, int y){
         super(id, x, y);
-        this.request = request;
+        listRequests = new LinkedList<>();
     }
 
     /**
      * METHODES
      */
-    public Request getRequest() {
-        return request;
-    }
+    public boolean ajouterRequest(Request request) {
+        if (request == null || listRequests.contains(request))
+            return false;
 
+        return listRequests.add(request);
+    }
 
     @Override
     public String toString() {
         return "Client{" +
-                "point=" + super.toString() +
-                ", demande=" + request +
-                '}';
+                "point= "+ super.toString() +
+                "listRequests=" + listRequests +
+                "} ";
     }
 }
