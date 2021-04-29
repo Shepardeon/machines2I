@@ -27,6 +27,10 @@ public class TourneeTech extends Tournee {
     public boolean ajouterRequest(Request request) {
 
         if(canInsererRequest(request)){
+
+            coutTotal += this.calculCoutAjoutRequest(request);
+            technician.ajouterRequest(request, jour);
+            System.out.println(coutTotal); // TODO : OOF
             this.listRequest.add(request);
             return true;
         }
@@ -40,7 +44,7 @@ public class TourneeTech extends Tournee {
 
     @Override
     public boolean canInsererRequest(Request request) {
-        return false;
+        return technician.isDisponible(request, jour) && request.getJourLivraison() < jour;
     }
 
     @Override

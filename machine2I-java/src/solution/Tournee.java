@@ -16,7 +16,9 @@ public abstract class Tournee {
      */
     protected int demandeTotale;
     protected int coutTotal;
+    protected Instance instance;
     protected Depot depot;
+    protected int jour;
     protected final LinkedList<Request> listRequest;
 
     /*
@@ -26,17 +28,20 @@ public abstract class Tournee {
     public Tournee(Tournee t) {
         demandeTotale = t.demandeTotale;
         coutTotal = t.coutTotal;
+        instance = t.instance;
         depot = t.depot;
+        jour = t.jour;
         listRequest = new LinkedList<>(t.listRequest);
     }
 
     public Tournee() {
         this.demandeTotale = 0;
         this.coutTotal = 0;
+        this.instance = null;
         this.listRequest = new LinkedList<Request>();
     }
 
-    public Tournee(Instance instance) {
+    public Tournee(Instance instance, int jour) {
         this.demandeTotale = 0;
         this.coutTotal = 0;
         this.listRequest = new LinkedList<Request>();
@@ -96,6 +101,21 @@ public abstract class Tournee {
     }
 
     public abstract boolean checkCalculerDemandeTotale();
+
+    public int calculCoutAjoutRequest(Request request){
+        // considére que la requette est ajouté en derniére position, à update plus tard pour prendre en compte une position n
+        int delta=0;
+        if(listRequest.isEmpty()){
+            delta += depot.getCoutVers(request.getClient());
+            delta += request.getClient().getCoutVers(depot);
+        }
+        else {
+            delta += listRequest.get(listRequest.size() - 1).getClient().getCoutVers(request.getClient());
+            delta -= listRequest.get(listRequest.size() - 1).getClient().getCoutVers(depot);
+            delta += request.getClient().getCoutVers(depot);
+        }
+        return delta;
+    }
 
     /**
      * Fonction qui calcule le coût total en itérant sur tous les clients et vérifie s'il correspond au deltaCout total de la

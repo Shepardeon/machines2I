@@ -3,9 +3,8 @@ package solution;
 import instance.Instance;
 import instance.Machine;
 import instance.Request;
-import network.Client;
 
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TourneeTruck extends Tournee {
@@ -13,11 +12,12 @@ public class TourneeTruck extends Tournee {
     private int maxCapacity;
     private Map<Integer, Machine> mapMachines;
 
-    public TourneeTruck(Instance instance) {
-        super(instance);
+    public TourneeTruck(Instance instance, int jour) {
+        super(instance, jour);
         this.depot = instance.getDepot();
         this.capacity = instance.getTruckCapacity();
         this.mapMachines = instance.getMapMachines();
+        this.maxCapacity = instance.getTruckCapacity();
     }
 
     public TourneeTruck(Tournee tournee) {
