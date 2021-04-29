@@ -121,10 +121,12 @@ public class Solution {
      */
     public boolean ajouterClientNouvelleTourneeTruck(Request r, int jour) {
         if (r == null) return false;
-        Tournee t = new TourneeTruck(instance);
-        if(!t.ajouterRequest(r)){
-            return false;
-        }
+        Tournee t = new TourneeTruck(instance, jour);
+        if(!t.ajouterRequest(r)) return false;
+
+        if (listeTournees.get(jour) == null)
+            listeTournees.put(jour, new LinkedList<>());
+
         listeTournees.get(jour).add(t);
         truckCost += t.getCoutTotal();
         coutTotal += t.getCoutTotal();
@@ -136,10 +138,23 @@ public class Solution {
      */
     public boolean ajouterClientNouvelleTourneeTech(Request r, int jour) {
         if (r == null) return false;
-        Tournee t = new TourneeTech(instance);
-        if(!t.ajouterRequest(r)){
-            return false;
+        Tech current = null;
+
+        for(Tech t : instance.getTechs()){
+            if(t.isDisponible(r, jour)) {
+                current = t;
+            }
         }
+
+        if(current == null) return false;
+
+        Tournee t = new TourneeTech(instance, jour, current);
+
+        if(!t.ajouterRequest(r)) return false;
+
+        if (listeTournees.get(jour) == null)
+            listeTournees.put(jour, new LinkedList<>());
+
         listeTournees.get(jour).add(t);
         techCost += t.getCoutTotal();
         coutTotal += t.getCoutTotal();

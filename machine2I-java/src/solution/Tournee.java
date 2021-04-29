@@ -45,6 +45,8 @@ public abstract class Tournee {
         this.demandeTotale = 0;
         this.coutTotal = 0;
         this.listRequest = new LinkedList<Request>();
+        this.jour = jour;
+        this.instance = instance;
     }
     /*
      * METHODES

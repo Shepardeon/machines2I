@@ -9,8 +9,10 @@ import network.Point;
 public class TourneeTech extends Tournee {
     private Tech technician;
 
-    public TourneeTech(Instance instance) {
-        super(instance);
+    public TourneeTech(Instance instance, int jour, Tech technician) {
+        super(instance, jour);
+        this.technician = technician;
+        this.depot = technician.getDepot();
     }
 
     public TourneeTech(TourneeTech tourneetech) {
