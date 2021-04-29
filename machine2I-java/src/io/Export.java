@@ -44,6 +44,7 @@ public class Export {
 			writer.println("NUMBER_OF_TECHNICIAN_DAYS = " + solution.getNumberTechnicianDays());
 			writer.println("NUMBER_OF_TECHNICIAN_USED = " + solution.getNumberTechniciansUsed());
 			writer.println("IDLE_MACHINE_COSTS = "+solution.getMachineCost());
+			writer.println("TOTAL_COST = "+solution.getCoutTotal());
 			writer.println();
 			Map<Integer,LinkedList<Tournee>> liste = solution.getListeTournees();
 			for (int i = 1; i <= solution.getInstance().getDays(); i++) {
@@ -52,12 +53,16 @@ public class Export {
 				LinkedList<Tournee> truck = new LinkedList<>();
 				int nbTruck = 0;
 				LinkedList<Tournee> tech = new LinkedList<>();
+				LinkedList<Integer> technician = new LinkedList<>();
 				int nbTech = 0;
 				if(tournees != null) {
 					for (Tournee t : tournees) {
 						if (t instanceof TourneeTech) {
 							tech.add(t);
-							nbTech++;
+							if(!technician.contains(((TourneeTech) t).getTechnician().getIdTechnician())){
+								technician.add(((TourneeTech) t).getTechnician().getIdTechnician());
+								nbTech++;
+							}
 						} else {
 							truck.add(t);
 							nbTruck++;
@@ -65,8 +70,8 @@ public class Export {
 					}
 				}
 				writer.println("NUMBER_OF_TRUCKS = " + nbTruck);
-				int idTruck = 0;
-				for (Tournee tournee : tech) {
+				int idTruck = 1;
+				for (Tournee tournee : truck) {
 					String chaine = "" + idTruck++;
 					LinkedList<Request> requests = tournee.getListRequest();
 					for (Request request : requests) {

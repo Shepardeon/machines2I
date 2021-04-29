@@ -9,16 +9,14 @@ import network.Point;
 public class TourneeTech extends Tournee {
     private Tech technician;
 
-    public TourneeTech() {
-        super();
-    }
-
     public TourneeTech(Instance instance) {
         super(instance);
     }
 
-    public TourneeTech(Tournee tournee) {
-        super(tournee);
+    public TourneeTech(TourneeTech tourneetech) {
+        super(tourneetech);
+        this.technician = tourneetech.technician;
+        this.depot = tourneetech.technician.getDepot();
     }
 
     public Tech getTechnician(){
