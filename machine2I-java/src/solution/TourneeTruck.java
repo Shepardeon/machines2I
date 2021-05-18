@@ -56,20 +56,6 @@ public class TourneeTruck extends Tournee {
     }
 
     @Override
-    public boolean checkCalculerDemandeTotale() {
-        int dTotale = 0;
-        for (Request r : this.getListRequest()) {
-            dTotale += r.getNbMachine();
-        }
-
-        boolean test = dTotale == this.getDemandeTotale();
-        if (!test)
-            System.out.println("Erreur Test checkCalculerDemandeTotale:\n\tdemande totale théorique: " + dTotale +
-                    "\n\tdemande effective: " + this.getDemandeTotale());
-        return test;
-    }
-
-    @Override
     public boolean canInsererRequest(Request request) {
         if (request == null) return false;
 

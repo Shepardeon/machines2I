@@ -14,7 +14,6 @@ public abstract class Tournee {
     /*
      * PARAMETRE
      */
-    protected int demandeTotale;
     protected int coutTotal;
     protected Instance instance;
     protected Depot depot;
@@ -26,7 +25,6 @@ public abstract class Tournee {
      */
 
     public Tournee(Tournee t) {
-        demandeTotale = t.demandeTotale;
         coutTotal = t.coutTotal;
         instance = t.instance;
         depot = t.depot;
@@ -35,14 +33,12 @@ public abstract class Tournee {
     }
 
     public Tournee() {
-        this.demandeTotale = 0;
         this.coutTotal = 0;
         this.instance = null;
         this.listRequest = new LinkedList<Request>();
     }
 
     public Tournee(Instance instance, int jour) {
-        this.demandeTotale = 0;
         this.coutTotal = 0;
         this.listRequest = new LinkedList<Request>();
         this.jour = jour;
@@ -51,10 +47,6 @@ public abstract class Tournee {
     /*
      * METHODES
      */
-
-    public int getDemandeTotale() {
-        return demandeTotale;
-    }
 
     public int getCoutTotal() {
         return coutTotal;
@@ -101,8 +93,6 @@ public abstract class Tournee {
     public boolean isPositionvalide(int pos) {
         return pos >= 0 && pos < listRequest.size();
     }
-
-    public abstract boolean checkCalculerDemandeTotale();
 
     public int calculCoutAjoutRequest(Request request){
         // considére que la requette est ajouté en derniére position, à update plus tard pour prendre en compte une position n
@@ -367,7 +357,6 @@ public abstract class Tournee {
     @Override
     public String toString() {
         return "Tournee{" +
-                ", demandeTotale=" + demandeTotale +
                 ", coutTotal=" + coutTotal +
                 '}';
     }

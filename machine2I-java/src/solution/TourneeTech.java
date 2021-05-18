@@ -41,11 +41,6 @@ public class TourneeTech extends Tournee {
     }
 
     @Override
-    public boolean checkCalculerDemandeTotale() {
-        return false;
-    }
-
-    @Override
     public boolean canInsererRequest(Request request) {
         return technician.isDisponible(request, jour) && request.getJourLivraison() < jour;
     }

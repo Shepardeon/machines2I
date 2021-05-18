@@ -146,6 +146,15 @@ public class Solution {
                 break; // TODO : Immonde donc à réfacto
             }
         }
+        /*
+          i=0
+        * while(current==null){
+        *   t = instance.getTechs(i);
+            if(t.isDisponible(r,jour){
+                current = t
+            }
+        * }
+        * */
 
         if(current == null) return false;
 
