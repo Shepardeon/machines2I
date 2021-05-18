@@ -16,8 +16,8 @@ public class Instance {
     private final String nom;
     private final int days;
     private final int truckCapacity;
-    private final int truckDistanceCost;
     private final int truckMaxDistance;
+    private final int truckDistanceCost;
     private final int truckDayCost;
     private final int truckCost;
     private final int technicianDistanceCost;
@@ -80,6 +80,30 @@ public class Instance {
 
     public int getTruckCapacity(){ return truckCapacity; }
 
+    public int getTruckDistanceCost() {
+        return truckDistanceCost;
+    }
+
+    public int getTruckDayCost() {
+        return truckDayCost;
+    }
+
+    public int getTruckCost() {
+        return truckCost;
+    }
+
+    public int getTechnicianDistanceCost() {
+        return technicianDistanceCost;
+    }
+
+    public int getTechnicianDayCost() {
+        return technicianDayCost;
+    }
+
+    public int getTechnicianCost() {
+        return technicianCost;
+    }
+
     public Map<Integer, Machine> getMapMachines(){ return mapMachines; }
 
     /**
@@ -141,11 +165,14 @@ public class Instance {
     public boolean ajouterRequest(Request request) {
         if (request == null || mapRequests.containsValue(request))
             return false;
-
-        mapRequests.put(request.getId(), request);
-        ajouterClient(request.getClient());
-        request.getClient().ajouterRequest(request);
-
+        if(mapClients.containsKey(request.getClient().getId())){
+            request.setClient(mapClients.get(request.getClient().getId()));
+        }else {
+            mapRequests.put(request.getId(), request);
+            ajouterClient(request.getClient());
+        }
+            request.getClient().ajouterRequest(request);
+            //System.out.println("request id=" + request.getId() + ", routes=" + request.getClient().getMapRoutes());
         return true;
     }
 

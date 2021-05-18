@@ -12,7 +12,7 @@ public abstract class Point {
     private final int x;
     private final int y;
 
-    private Map<Point, Route> mapRoutes;
+    private Map<Integer, Route> mapRoutes;
 
     /**
      * CONSTRUCTEUR
@@ -39,15 +39,19 @@ public abstract class Point {
         return y;
     }
 
+    public Map<Integer, Route> getMapRoutes() {
+        return mapRoutes;
+    }
+
     /**
      * Méthode qui ajoute une route à la liste des routes partant de ce point. Elle ajoute aussi la route au point de
      * destination.
      * @param dest le point de destination de la route
      */
     public void ajouterRoute(Point dest) {
-        if (dest != null) {
-            dest.mapRoutes.put(this, new Route(dest, this));
-            mapRoutes.put(dest, new Route(this, dest));
+        if (dest != null && dest != this) {
+            dest.mapRoutes.put(this.id, new Route(dest, this));
+            mapRoutes.put(dest.id, new Route(this, dest));
         }
     }
 
@@ -57,7 +61,7 @@ public abstract class Point {
      * @return le deltaCout entre ce point et la destination
      */
     public int getCoutVers(Point dest) {
-        Route r = mapRoutes.get(dest);
+        Route r = mapRoutes.get(dest.id);
         if (r == null)
             return Integer.MAX_VALUE;
         return r.getCout();

@@ -16,7 +16,7 @@ public abstract class Tournee {
      */
     protected int coutTotal;
     protected Instance instance;
-    protected Depot depot;
+    protected Point depot;
     protected int jour;
     protected final LinkedList<Request> listRequest;
 
@@ -60,7 +60,7 @@ public abstract class Tournee {
         return listRequest.isEmpty();
     }
 
-    public Depot getDepot(){
+    public Point getDepot(){
         return this.depot;
     };
 
@@ -103,10 +103,12 @@ public abstract class Tournee {
             delta += depot.getCoutVers(request.getClient())*2;
         }
         else {
+            //System.out.println("else");
             delta += listRequest.get(listRequest.size() - 1).getClient().getCoutVers(request.getClient());
             delta -= listRequest.get(listRequest.size() - 1).getClient().getCoutVers(depot); // :friJudge:
             delta += request.getClient().getCoutVers(depot);
         }
+        //System.out.println("delta ="+delta);
         return delta;
     }
 

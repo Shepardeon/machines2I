@@ -12,12 +12,6 @@ public class Tech {
         private int demande;
         private int distance;
 
-        public Etat(int demande,int distance){
-            this.demande = demande;
-            this.distance = distance;
-
-        }
-
         public void ajouterDemande(int valeur){
             this.demande += valeur;
         }
@@ -59,15 +53,12 @@ public class Tech {
         }
 
 
-        return this.Disponibilite.get(jour).demande + request.getNbMachine() <= maxDemande
-                && this.Disponibilite.get(jour).distance + this.depot.getCoutVers(request.getClient()) <= maxDistance;
+        return request.getNbMachine() <= maxDemande && this.depot.getCoutVers(request.getClient())*2 <= maxDistance;
     }
 
     public void ajouterRequest(Request request,int jour){
         if(isDisponible(request, jour)){
-            Disponibilite.computeIfAbsent(jour,k -> new Etat(0,0));
-            Disponibilite.get(jour).ajouterDemande(request.getNbMachine());
-            Disponibilite.get(jour).ajouterDistance(this.depot.getCoutVers(request.getClient()));
+            Disponibilite.put(jour, false);
         }
     }
 

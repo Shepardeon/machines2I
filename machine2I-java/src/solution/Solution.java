@@ -2,7 +2,6 @@ package solution;
 
 import instance.Instance;
 import instance.Request;
-import network.Client;
 import network.Tech;
 
 import java.util.*;
@@ -14,15 +13,20 @@ public class Solution {
     private int coutTotal;
     private final Instance instance;
     private final Map<Integer,LinkedList<Tournee>> listeTournees;
-    private int techCost;
+    private int techCost; // Cout par technician utilisé
+    private int techDayCost; // Cout par jour par technician
+    private int techDistanceCost; // Cout par m pour technician
+    private int truckCost; // Cout par truck utilisé
+    private int truckDayCost; // Cout par jour par truck
+    private int truckDistanceCost; // Cout par m pour truck
     private int truckDistance;
     private int numberTruckDays;
     private int numberTrucksUsed;
-    private int truckCost;
     private int technicianDistance;
     private int numberTechnicianDays;
     private int numberTechniciansUsed;
-    private int technicianCost;
+    private int totaltechCost; // cout total pour technician
+    private int totaltruckCost; // cout total pour camion
     private int machineCost;
 
     /*
@@ -31,8 +35,13 @@ public class Solution {
     public Solution(Instance instance) {
         this.coutTotal = 0;
         this.truckCost = 0;
-        this.techCost = 0;
-        this.technicianCost = 0;
+        this.techCost = instance.getTechnicianCost();
+        this.techDayCost = instance.getTechnicianDayCost();
+        this.techDistanceCost = instance.getTechnicianDistanceCost();
+        this.truckCost = instance.getTruckCost();
+        this.truckDayCost = instance.getTruckDayCost();
+        this.truckDistanceCost = instance.getTruckDistanceCost();
+        this.totaltechCost = 0;
         this.truckDistance = 0;
         this.numberTruckDays = 0;
         this.numberTrucksUsed = 0;
@@ -49,7 +58,7 @@ public class Solution {
         instance = sol.instance;
         this.techCost = sol.techCost;
         this.truckCost = sol.truckCost;
-        this.technicianCost = sol.technicianCost;
+        this.totaltechCost = sol.totaltechCost;
         this.truckDistance = sol.truckDistance;
         this.numberTruckDays = sol.numberTruckDays;
         this.numberTrucksUsed = sol.numberTrucksUsed;
@@ -128,8 +137,12 @@ public class Solution {
             listeTournees.put(jour, new LinkedList<>());
 
         listeTournees.get(jour).add(t);
-        truckCost += t.getCoutTotal();
-        coutTotal += t.getCoutTotal();
+        truckDistance += t.getCoutTotal();
+        int cout = t.getCoutTotal()*truckDistanceCost + truckDayCost + truckCost;
+        totaltruckCost += cout;
+        coutTotal += cout;
+        numberTrucksUsed++;
+        numberTruckDays++;
         return true;
     }
     /**
@@ -165,9 +178,14 @@ public class Solution {
         if (listeTournees.get(jour) == null)
             listeTournees.put(jour, new LinkedList<>());
 
+        current.ajouterRequest(r,jour);
         listeTournees.get(jour).add(t);
-        techCost += t.getCoutTotal();
-        coutTotal += t.getCoutTotal();
+        technicianDistance += t.getCoutTotal()*techDistanceCost;
+        int cout = t.getCoutTotal()*techDistanceCost + techDayCost + techCost;
+        totaltechCost += cout;
+        coutTotal += cout;
+        numberTechnicianDays++;
+        numberTechniciansUsed++;
         return true;
     }
 
