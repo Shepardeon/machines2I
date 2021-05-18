@@ -42,7 +42,7 @@ public class Export {
 			writer.println("NUMBER_OF_TRUCKS_USED = " + solution.getNumberTrucksUsed());
 			writer.println("TECHNICIAN_DISTANCE = " + solution.getTechnicianDistance());
 			writer.println("NUMBER_OF_TECHNICIAN_DAYS = " + solution.getNumberTechnicianDays());
-			writer.println("NUMBER_OF_TECHNICIAN_USED = " + solution.getNumberTechniciansUsed());
+			writer.println("NUMBER_OF_TECHNICIANS_USED = " + solution.getNumberTechniciansUsed());
 			writer.println("IDLE_MACHINE_COSTS = "+solution.getMachineCost());
 			writer.println("TOTAL_COST = "+solution.getCoutTotal());
 			writer.println();

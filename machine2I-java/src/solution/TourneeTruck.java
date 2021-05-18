@@ -47,7 +47,7 @@ public class TourneeTruck extends Tournee {
 
             coutTotal += this.calculCoutAjoutRequest(request);
             this.listRequest.add(request);
-            System.out.println(coutTotal); // TODO : OOF
+            //System.out.println(coutTotal); // TODO : OOF
             capacity += this.instance.getMapMachines().get(request.getIdMachine()).getSize();
 
             return true;

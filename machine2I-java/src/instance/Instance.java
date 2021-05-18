@@ -3,6 +3,7 @@ package instance;
 import instance.Request;
 import network.Client;
 import network.Depot;
+import network.Point;
 import network.Tech;
 
 import java.util.*;
@@ -156,11 +157,17 @@ public class Instance {
     public boolean ajouterTech(Tech technician) {
         if (technician == null || technicians.contains(technician))
             return false;
+        if(mapClients.containsKey(technician.getDepot().getId())){
+            technician.setDepot(mapClients.get(technician.getDepot().getId()));
+        }else {
+            technician.getDepot().ajouterRoute(depot);
+            for (Client c : mapClients.values())
+                technician.getDepot().ajouterRoute(c);
+            for (Tech t : technicians)
+                technician.getDepot().ajouterRoute(t.getDepot());
+        }
         technicians.add(technician);
-        for (Client c : mapClients.values())
-            technician.getDepot().ajouterRoute(c);
-        for (Tech t : technicians)
-            technician.getDepot().ajouterRoute(t.getDepot());
+        //System.out.println("tech id="+technician.getIdTechnician()+", routes="+technician.getDepot().getMapRoutes());
         return true;
     }
 

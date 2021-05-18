@@ -248,7 +248,7 @@ public class Import {
         while(line != null) {
             Tech t = readTech(line, points, machines);
             if (t != null)
-                System.out.println(techs.add(t));
+                techs.add(t);
             line = br.readLine();
         }
         return techs;
@@ -326,8 +326,6 @@ public class Import {
         int maxDist = Integer.parseInt(val[2]);
         int maxReq = Integer.parseInt(val[3]);
 
-        System.out.println(idPoint);
-
         List<Integer> abilities = new ArrayList<>();
         for (int i = 4; i < val.length; i++)
             abilities.add(Integer.parseInt(val[i]));
@@ -346,7 +344,6 @@ public class Import {
             System.out.println("Num clients = " + i.getNbClients());
             System.out.println("Num tech = " + i.getTechs().size());
 
-            System.out.println(i);
         } catch (ReaderException ex) {
             System.out.println(ex.getMessage());
         }

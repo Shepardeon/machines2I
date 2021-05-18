@@ -2,6 +2,7 @@ package solution;
 
 import instance.Instance;
 import instance.Request;
+import network.Depot;
 import network.Tech;
 import network.Client;
 import network.Point;
@@ -32,7 +33,7 @@ public class TourneeTech extends Tournee {
 
             coutTotal += this.calculCoutAjoutRequest(request);
             technician.ajouterRequest(request, jour);
-            System.out.println(coutTotal); // TODO : OOF
+            //System.out.println(coutTotal); // TODO : OOF
             this.listRequest.add(request);
             return true;
         }

@@ -31,8 +31,8 @@ public class Tech {
     private int maxDistance;
     private int maxDemande;
     private List<Integer> machines;
-    private Depot depot;
-    private Map<Integer,Etat> Disponibilite;
+    private Point depot;
+    private Map<Integer,Boolean> Disponibilite;
 
     /**
      * CONSTRUCTEUR
@@ -47,8 +47,17 @@ public class Tech {
     }
 
     public boolean isDisponible(Request request, int jour){
-        if(!this.machines.contains(request.getIdMachine())) return false;
-        if(this.Disponibilite.get(jour) == null) return true;
+        if(this.machines.get(request.getIdMachine()-1) != 1) return false;
+        if(this.Disponibilite.get(jour) != null && !this.Disponibilite.get(jour)){
+            //System.out.println("non");
+            return false;
+        }
+        if(idTechnician == 18 && request.getId() == 20){
+            System.out.println("demande = "+request.getNbMachine() +", "+maxDemande);
+            System.out.println("cout = "+this.depot.getCoutVers(request.getClient())*2+", "+maxDistance);
+            System.out.println(request.getNbMachine() <= maxDemande && this.depot.getCoutVers(request.getClient())*2 <= maxDistance);
+        }
+
 
         return this.Disponibilite.get(jour).demande + request.getNbMachine() <= maxDemande
                 && this.Disponibilite.get(jour).distance + this.depot.getCoutVers(request.getClient()) <= maxDistance;
@@ -62,8 +71,12 @@ public class Tech {
         }
     }
 
-    public Depot getDepot(){
+    public Point getDepot(){
         return this.depot;
+    }
+
+    public void setDepot(Point depot) {
+        this.depot = depot;
     }
 
     public int getIdTechnician(){

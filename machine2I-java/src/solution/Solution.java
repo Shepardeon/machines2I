@@ -143,6 +143,7 @@ public class Solution {
         for(Tech t : instance.getTechs()){
             if(t.isDisponible(r, jour)) {
                 current = t;
+                break; // TODO : Immonde donc à réfacto
             }
         }
 

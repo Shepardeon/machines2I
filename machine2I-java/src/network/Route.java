@@ -27,7 +27,7 @@ public class Route {
      * @return le deltaCout entier d'une route.
      */
     private int calculerCout() {
-        return (int)Math.round(
+        return (int)Math.ceil(
                         Math.sqrt(
                                 (fin.getX() - debut.getX())*(fin.getX() - debut.getX())
                               + (fin.getY() - debut.getY())*(fin.getY() - debut.getY())

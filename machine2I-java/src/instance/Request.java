@@ -28,6 +28,10 @@ public class Request {
 
     public Client getClient() { return this.client; }
 
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
     public int getId() { return this.id; }
 
     public int getIdMachine() { return this.idMachine; }

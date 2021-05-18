@@ -8,6 +8,10 @@ import solution.Solution;
 import solveur.Solveur;
 import solveur.Trivial;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 
 public class mainTest {
     public static void main(String[] args) {
