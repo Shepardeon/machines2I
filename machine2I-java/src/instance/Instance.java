@@ -163,14 +163,15 @@ public class Instance {
     }
 
     public boolean ajouterRequest(Request request) {
+
         if (request == null || mapRequests.containsValue(request))
             return false;
         if(mapClients.containsKey(request.getClient().getId())){
             request.setClient(mapClients.get(request.getClient().getId()));
         }else {
-            mapRequests.put(request.getId(), request);
             ajouterClient(request.getClient());
         }
+            mapRequests.put(request.getId(), request);
             request.getClient().ajouterRequest(request);
             //System.out.println("request id=" + request.getId() + ", routes=" + request.getClient().getMapRoutes());
         return true;

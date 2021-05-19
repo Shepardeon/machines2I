@@ -43,4 +43,9 @@ public class Request {
     public void setJourLivraison(int jourLivraison) {
         this.jourLivraison = jourLivraison;
     }
+
+    @Override
+    public String toString() {
+        return "Requet{id="+id+", Client="+client.getId()+", Machine="+nbMachine+" type "+idMachine+", delais entre"+firstDay+" et "+lastDay+"}";
+    }
 }
