@@ -84,7 +84,7 @@ public class Solution {
     /*
      * METHODES
      */
-    public int getCoutTotal() {
+    public long getCoutTotal() {
         return coutTotal;
     }
 
@@ -100,7 +100,7 @@ public class Solution {
         return this.numberTrucksUsed;
     }
 
-    public int getTechnicianDistance(){
+    public long getTechnicianDistance(){
         return this.technicianDistance;
     }
 
@@ -151,7 +151,6 @@ public class Solution {
      */
     public boolean ajouterClientNouvelleTourneeTech(Request r, int jour) {
         if (r == null) return false;
-        Tech current = null;
 
         /*
         for(Tech t : instance.getTechs()){

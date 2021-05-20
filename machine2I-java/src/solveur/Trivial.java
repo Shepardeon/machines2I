@@ -3,8 +3,6 @@ package solveur;
 import instance.Instance;
 import instance.Request;
 import solution.Solution;
-import solution.TourneeTech;
-import solution.TourneeTruck;
 
 public class Trivial implements Solveur{
 
@@ -22,7 +20,7 @@ public class Trivial implements Solveur{
         }
         for(Request r : instance.getRequests()) {
             int day = 0;
-            if(!solu.ajouterClientNouvelleTourneeTech(r, r.getFirstDay()+1)){
+            while(r.getFirstDay()+1+day <= solu.getInstance().getDays() && !solu.ajouterClientNouvelleTourneeTech(r, r.getFirstDay()+1+day)){
                 day++;
                 solu.ajouterClientNouvelleTourneeTech(r, r.getFirstDay()+1+day);
             }

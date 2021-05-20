@@ -9,16 +9,16 @@ import java.util.Map;
 public class Tech {
 
     private class Etat {
-        private boolean occupied;
+        private boolean disponible;
         private int fatigue;
 
         protected Etat(Boolean occupied, int fatigue){
-            this.occupied = occupied;
+            this.disponible = occupied;
             this.fatigue = fatigue;
         }
 
-        public void setOccupied(boolean valeur){
-            this.occupied = valeur;
+        public void setDisponible(boolean valeur){
+            this.disponible = valeur;
         }
 
         public void setFatigue(int valeur){
@@ -47,7 +47,7 @@ public class Tech {
 
     public boolean isDisponible(Request request, int jour){
         if(this.machines.get(request.getIdMachine()-1) != 1) return false;
-        if(this.disponibilite.get(jour) != null && !this.disponibilite.get(jour).occupied){
+        if(!this.disponibilite.get(jour).disponible){
             //System.out.println("non");
             return false;
         }
@@ -57,8 +57,7 @@ public class Tech {
                 return false;
             }
             // Vérif si le mec a taffé pendant 5 jours de suite mais n'a pas encore fait ses 2 jours de repos
-            if((this.disponibilite.get(jour-1) == null || this.disponibilite.get(jour-1).occupied ) &&
-                    this.disponibilite.get(jour-2) != null && this.disponibilite.get(jour-2).fatigue == 5
+            if(this.disponibilite.get(jour-1).disponible && this.disponibilite.get(jour-2).fatigue == 5
             ){
                 return false;
             }
@@ -77,9 +76,9 @@ public class Tech {
             int finalFatigue = fatigue;
             disponibilite.computeIfAbsent(jour, k -> new Etat(false, finalFatigue +1));
             int i = jour;
-            while(disponibilite.get(i) != null && !disponibilite.get(i).occupied){
+            while(!disponibilite.get(i).disponible){
                 int fat = 0;
-                if(disponibilite.get(i-1) != null){
+                if(i != 1){
                     fat = disponibilite.get(i-1).fatigue;
                 }
                 disponibilite.get(i).fatigue = fat+1;

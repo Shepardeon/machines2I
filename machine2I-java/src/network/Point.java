@@ -49,7 +49,8 @@ public abstract class Point {
      * @param dest le point de destination de la route
      */
     public void ajouterRoute(Point dest) {
-        if (dest != null && dest != this) {
+        // On retire la limite de la route car c'est le démon et ça te fait disparaitre genre 2-3 km
+        if (dest != null /*&& dest != this*/) {
             dest.mapRoutes.put(this.id, new Route(dest, this));
             mapRoutes.put(dest.id, new Route(this, dest));
         }
