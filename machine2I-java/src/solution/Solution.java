@@ -152,26 +152,9 @@ public class Solution {
     public boolean ajouterClientNouvelleTourneeTech(Request r, int jour) {
         if (r == null) return false;
 
-        /*
-        for(Tech t : instance.getTechs()){
-            if(t.isDisponible(r, jour)) {
-                current = t;
-                break; // TODO : Immonde donc à réfacto
-            }
-        }
-        */
+        Tech current = techFetcher(r, jour);
 
-         int i=0;
-         while(current==null){
-           Tech t = instance.getTechs().get(i);
-            if(t.isDisponible(r,jour)){
-                current = t;
-            }
-            if(i==instance.getTechs().size()){
-                return false;
-            }
-            i++;
-         }
+        if(current==null) return false;
 
         Tournee t = new TourneeTech(instance, jour, current);
 
@@ -191,44 +174,92 @@ public class Solution {
         return true;
     }
 
-    /**
-     * Fonction qui ajoute un client à une tournée existante dans la liste des tournées
-     * @param r le client à ajouter
-     * @return true si l'ajout a été fait et false sinon
-     */
-    /*public boolean ajouterRequest(Request r,int jour) {
-        if (r == null) return false;
-        for (Tournee t : listeTournees.get(jour)) {
-            if (addClient(r, t)) return true;
-        }
-        return false;
-    }*/
+    public Tech techFetcher(Request r, int j){
+        if (r == null) return null;
+        Tech current = null;
 
-    /**
-     * Fonction qui ajoute un client à la dernière tournée de la liste des tournées
-     * @param r le client à ajouter
-     * @param jour
-     * @return true si l'ajout a été fait et false sinon
-     */
-    public boolean ajouterClientDerniereTournee(Request r, int jour) {
-        if (r == null || listeTournees.isEmpty()) return false;
-        Tournee t = listeTournees.get(jour).getLast();
-        return addRequest(r, t);
+        int i=0;
+        while(current==null && i < instance.getTechs().size()){
+            Tech t = instance.getTechs().get(i);
+            if(t.isDisponible(r,j)){
+                current = t;
+            }
+            i++;
+        }
+        return current;
     }
 
     /**
-     * Fonction qui ajoute un client à une tournée donnée
+     * Fonction qui ajoute un client à une tournée
      * @param r le client à ajouter
-     * @param t la tournée à laquelle ajouter un client
-     * @return true si l'ajout a eu lieux et false sinon
+     * @param t la tournée
+     * @return true si l'ajout a été fait et false sinon
      */
-    private boolean addRequest(Request r, Tournee t) {
-        int oldCout = t.getCoutTotal();
-        if (t.ajouterRequest(r)) {
-            coutTotal += t.getCoutTotal() - oldCout;
-            return true;
+    public boolean ajouterClientTourneeTruck(Request r, Tournee t) {
+        if (r == null || listeTournees.isEmpty()) return false;
+        if (listeTournees.get(t.jour) == null)
+            listeTournees.put(t.jour, new LinkedList<>());
+
+        if(!t.ajouterRequest(r)) return false;
+        truckDistance += t.getCoutTotal();
+        int cout = t.getCoutTotal()*truckDistanceCost + truckDayCost;
+        totaltruckCost += cout;
+        coutTotal += cout;
+        int used = 0;
+        for(Tournee tournee : listeTournees.get(t.jour)){
+            if(tournee instanceof TourneeTruck)
+                used++;
+                totaltruckCost += truckCost;
+                coutTotal += truckCost;
         }
-        return false;
+        if(used > numberTrucksUsed){
+            numberTrucksUsed = used;
+        }
+        numberTruckDays++;
+
+        return true;
+    }
+
+    public boolean ajouterClientTourneeTech(Request r, TourneeTech t) {
+        if (r == null) return false;
+
+        Tech current = techFetcher(r, t.jour);
+
+        if(current==null) return false;
+
+        if(!t.ajouterRequest(r)) return false;
+
+        listeTournees.computeIfAbsent(t.jour, k -> new LinkedList<>());
+
+        current.ajouterRequest(r,t.jour);
+        listeTournees.get(t.jour).add(t);
+
+        int machine = calculerCostRetard(r,t.jour);
+        machineCost += machine;
+        coutTotal += machine;
+
+        technicianDistance += t.getCoutTotal();
+        t.check();
+        int cout = t.getCoutTotal()*techDistanceCost + techDayCost;
+        totaltechCost += cout;
+        coutTotal += cout;
+        numberTechnicianDays++;
+        boolean test = false;
+        for(int j=1;j<= listeTournees.size();j++){
+            for (Tournee tournee : listeTournees.get(j)){
+                if(tournee instanceof TourneeTech){
+                    if( t != tournee && ((TourneeTech) tournee).getTechnician() == ((TourneeTech) t).getTechnician()){
+                        test = true;
+                    }
+                }
+            }
+        }
+        if (!test){
+            numberTechniciansUsed++;
+            totaltechCost += techCost;
+            coutTotal += techCost;
+        }
+        return true;
     }
 
     /*/**
