@@ -153,23 +153,26 @@ public class Solution {
         if (r == null) return false;
         Tech current = null;
 
+        /*
         for(Tech t : instance.getTechs()){
             if(t.isDisponible(r, jour)) {
                 current = t;
                 break; // TODO : Immonde donc à réfacto
             }
         }
-        /*
-          i=0
-        * while(current==null){
-        *   t = instance.getTechs(i);
-            if(t.isDisponible(r,jour){
-                current = t
-            }
-        * }
-        * */
+        */
 
-        if(current == null) return false;
+         int i=0;
+         while(current==null){
+           Tech t = instance.getTechs().get(i);
+            if(t.isDisponible(r,jour)){
+                current = t;
+            }
+            if(i==instance.getTechs().size()){
+                return false;
+            }
+            i++;
+         }
 
         Tournee t = new TourneeTech(instance, jour, current);
 
