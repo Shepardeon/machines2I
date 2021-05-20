@@ -185,6 +185,7 @@ public class Instance {
     public boolean ajouterTech(Tech technician) {
         if (technician == null || technicians.contains(technician))
             return false;
+        technician.initDays(days);
         if(mapClients.containsKey(technician.getDepot().getId())){
             technician.setDepot(mapClients.get(technician.getDepot().getId()));
         }else {

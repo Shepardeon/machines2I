@@ -98,8 +98,6 @@ public abstract class Tournee {
         // considére que la requette est ajouté en derniére position, à update plus tard pour prendre en compte une position n
         int delta=0;
         if(listRequest.isEmpty()){
-            //System.out.println("client ["+request.getClient().getId()+"]-> depot = "+request.getClient().getCoutVers(depot));
-            //System.out.println("getMapRoutes="+request.getClient().getMapRoutes());
             delta += depot.getCoutVers(request.getClient())*2;
         }
         else {

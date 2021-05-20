@@ -29,8 +29,8 @@ public class Route {
     private int calculerCout() {
         return (int)Math.ceil(
                         Math.sqrt(
-                                (fin.getX() - debut.getX())*(fin.getX() - debut.getX())
-                              + (fin.getY() - debut.getY())*(fin.getY() - debut.getY())
+                                Math.pow(fin.getX() - debut.getX(),2)
+                              + Math.pow(fin.getY() - debut.getY(),2)
                         )
         );
     }

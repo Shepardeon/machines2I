@@ -53,7 +53,7 @@ public class Tech {
         }
         if(jour >= 5){
             // Vérif si le mec a taffé pendant 5 jours de suite
-            if(this.disponibilite.get(jour-1) != null && this.disponibilite.get(jour-1).fatigue == 5){
+            if(this.disponibilite.get(jour-1).fatigue == 5){
                 return false;
             }
             // Vérif si le mec a taffé pendant 5 jours de suite mais n'a pas encore fait ses 2 jours de repos
@@ -68,13 +68,13 @@ public class Tech {
 
     public void ajouterRequest(Request request,int jour){
         if(isDisponible(request, jour)){
-            int fatigue;
-            fatigue = 0;
-            if(this.disponibilite.get(jour-1) != null){
-                fatigue = this.disponibilite.get(jour-1).fatigue;
+            int fatigue = 0;
+            if(jour != 1) {
+                fatigue = this.disponibilite.get(jour - 1).fatigue;
             }
             int finalFatigue = fatigue;
-            disponibilite.computeIfAbsent(jour, k -> new Etat(false, finalFatigue +1));
+            disponibilite.get(jour).setDisponible(false);
+            disponibilite.get(jour).setFatigue(fatigue+1);
             int i = jour;
             while(!disponibilite.get(i).disponible){
                 int fat = 0;
@@ -84,6 +84,12 @@ public class Tech {
                 disponibilite.get(i).fatigue = fat+1;
                 i++;
             }
+        }
+    }
+
+    public void initDays(int days) {
+        for(int i = 1; i <=days; i++){
+            disponibilite.computeIfAbsent(i, k -> new Etat(true, 0));
         }
     }
 

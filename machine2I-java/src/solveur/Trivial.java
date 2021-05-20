@@ -22,7 +22,6 @@ public class Trivial implements Solveur{
             int day = 0;
             while(r.getFirstDay()+1+day <= solu.getInstance().getDays() && !solu.ajouterClientNouvelleTourneeTech(r, r.getFirstDay()+1+day)){
                 day++;
-                solu.ajouterClientNouvelleTourneeTech(r, r.getFirstDay()+1+day);
             }
         }
 
