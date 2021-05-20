@@ -40,6 +40,14 @@ public class Request {
         return jourLivraison;
     }
 
+    public int getFirstDay() {
+        return firstDay;
+    }
+
+    public int getLastDay() {
+        return lastDay;
+    }
+
     public void setJourLivraison(int jourLivraison) {
         this.jourLivraison = jourLivraison;
     }

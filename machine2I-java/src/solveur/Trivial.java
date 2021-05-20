@@ -18,14 +18,13 @@ public class Trivial implements Solveur{
         Solution solu = new Solution(instance);
 
         for(Request r : instance.getRequests()) {
-            solu.ajouterClientNouvelleTourneeTruck(r,1); // Pour rappel on a camion infini
-
+            solu.ajouterClientNouvelleTourneeTruck(r, r.getFirstDay()); // Pour rappel on a camion infini
         }
         for(Request r : instance.getRequests()) {
-            int day = 2;
-            if(!solu.ajouterClientNouvelleTourneeTech(r,day)){
+            int day = 0;
+            if(!solu.ajouterClientNouvelleTourneeTech(r, r.getFirstDay()+1)){
                 day++;
-                solu.ajouterClientNouvelleTourneeTech(r,day);
+                solu.ajouterClientNouvelleTourneeTech(r, r.getFirstDay()+1+day);
             }
         }
 
