@@ -9,15 +9,20 @@ import java.util.Map;
 public class Tech {
 
     private class Etat {
-        private int demande;
-        private int distance;
+        private boolean occupied;
+        private int fatigue;
 
-        public void ajouterDemande(int valeur){
-            this.demande += valeur;
+        protected Etat(Boolean occupied, int fatigue){
+            this.occupied = occupied;
+            this.fatigue = fatigue;
         }
 
-        public void ajouterDistance(int valeur){
-            this.distance += valeur;
+        public void setOccupied(boolean valeur){
+            this.occupied = valeur;
+        }
+
+        public void setFatigue(int valeur){
+            this.fatigue += valeur;
         }
     }
 
@@ -26,7 +31,7 @@ public class Tech {
     private int maxDemande;
     private List<Integer> machines;
     private Point depot;
-    private Map<Integer,Boolean> Disponibilite;
+    private Map<Integer,Etat> disponibilite;
 
     /**
      * CONSTRUCTEUR
@@ -37,28 +42,49 @@ public class Tech {
         this.maxDistance = maxDistance;
         this.maxDemande = maxDemande;
         this.machines = machines;
-        this.Disponibilite = new HashMap<>();
+        this.disponibilite = new HashMap<>();
     }
 
     public boolean isDisponible(Request request, int jour){
         if(this.machines.get(request.getIdMachine()-1) != 1) return false;
-        if(this.Disponibilite.get(jour) != null && !this.Disponibilite.get(jour)){
+        if(this.disponibilite.get(jour) != null && !this.disponibilite.get(jour).occupied){
             //System.out.println("non");
             return false;
         }
-        if(idTechnician == 18 && request.getId() == 20){
-            System.out.println("demande = "+request.getNbMachine() +", "+maxDemande);
-            System.out.println("cout = "+this.depot.getCoutVers(request.getClient())*2+", "+maxDistance);
-            System.out.println(request.getNbMachine() <= maxDemande && this.depot.getCoutVers(request.getClient())*2 <= maxDistance);
+        if(jour >= 5){
+            // Vérif si le mec a taffé pendant 5 jours de suite
+            if(this.disponibilite.get(jour-1) != null && this.disponibilite.get(jour-1).fatigue == 5){
+                return false;
+            }
+            // Vérif si le mec a taffé pendant 5 jours de suite mais n'a pas encore fait ses 2 jours de repos
+            if((this.disponibilite.get(jour-1) == null || this.disponibilite.get(jour-1).occupied ) &&
+                    this.disponibilite.get(jour-2) != null && this.disponibilite.get(jour-2).fatigue == 5
+            ){
+                return false;
+            }
         }
-
 
         return request.getNbMachine() <= maxDemande && this.depot.getCoutVers(request.getClient())*2 <= maxDistance;
     }
 
     public void ajouterRequest(Request request,int jour){
         if(isDisponible(request, jour)){
-            Disponibilite.put(jour, false);
+            int fatigue;
+            fatigue = 0;
+            if(this.disponibilite.get(jour-1) != null){
+                fatigue = this.disponibilite.get(jour-1).fatigue;
+            }
+            int finalFatigue = fatigue;
+            disponibilite.computeIfAbsent(jour, k -> new Etat(false, finalFatigue +1));
+            int i = jour;
+            while(disponibilite.get(i) != null && !disponibilite.get(i).occupied){
+                int fat = 0;
+                if(disponibilite.get(i-1) != null){
+                    fat = disponibilite.get(i-1).fatigue;
+                }
+                disponibilite.get(i).fatigue = fat+1;
+                i++;
+            }
         }
     }
 
