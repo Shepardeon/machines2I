@@ -5,6 +5,8 @@ import io.Import;
 import io.Export;
 import io.exception.ReaderException;
 import solution.Solution;
+import solveur.Ajout;
+import solveur.InsertionPPV;
 import solveur.Solveur;
 import solveur.Trivial;
 
@@ -16,7 +18,6 @@ import java.io.InputStreamReader;
 public class mainTest {
     public static void main(String[] args) {
         try {
-            System.out.println("Zbwee zbweee, who's that pokemon?");
             Import reader = new Import("instances/ORTEC-early-easy/VSC2019_ORTEC_early_01_easy.txt");
             Instance i = reader.readInstance();
             System.out.println("Instance lue avec success !");
@@ -26,14 +27,22 @@ public class mainTest {
 
             System.out.println(i);
 
-            Solveur solv = new Trivial();
+            Solveur solvA = new Ajout();
+            Solveur solvT = new Trivial();
+            Solveur solvPPV = new InsertionPPV();
 
-            Solution solu = solv.solve(i);
+            Solution solu;
 
-            System.out.println(solu);
+            solu = solvT.solve(i);
+            System.out.println("Trivial " + solu.getCoutTotal());
+
+            solu = solvA.solve(i);
+            System.out.println("Ajout " + solu.getCoutTotal());
+
+            solu = solvPPV.solve(i);
+            System.out.println("PPV " + solu.getCoutTotal());
 
             Export exp = new Export(solu);
-
             exp.ExporterSolution();
         } catch (
         ReaderException ex) {

@@ -40,7 +40,7 @@ public class Ajout implements Solveur {
 
 
         for (Request r : instance.getRequests()) {
-            ok = false;
+            boolean ok = false;
             int day = 0;
             for (int j = 0; j <= solu.getListeTournees().size(); j++) {
                 if (solu.getListeTournees().get(j) != null){

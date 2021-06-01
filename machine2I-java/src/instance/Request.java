@@ -54,6 +54,6 @@ public class Request {
 
     @Override
     public String toString() {
-        return "Requet{id="+id+", Client="+client.getId()+", Machine="+nbMachine+" type "+idMachine+", delais entre"+firstDay+" et "+lastDay+"}";
+        return "Request{id="+id+", Client="+client.getId()+", Machine="+nbMachine+" type "+idMachine+", delais entre"+firstDay+" et "+lastDay+"}";
     }
 }
