@@ -23,21 +23,23 @@ public class Ajout implements Solveur {
     @Override
     public Solution solve(Instance instance) {
         Solution solu = new Solution(instance);
-
-        boolean ok;
-        for (Request r : instance.getRequests()) { // Tournee Truck
-            ok = false;
-            for (int j = 0; j <= solu.getListeTournees().size(); j++) {
-                for (Tournee t : solu.getListeTournees().get(j)) {
-                    if (!ok && solu.ajouterClientTourneeTruck(r, t)) ok = true;
+        for(Request r : instance.getRequests()){
+            int i=0;
+            LinkedList<Tournee> list_t = solu.getListeTournees().get(r.getFirstDay());
+            if(list_t.isEmpty()){
+                solu.ajouterClientNouvelleTourneeTruck(r, r.getFirstDay());
+            }else {
+                Tournee t = list_t.get(i);
+                while (!solu.ajouterClientTourneeTruck(r, t)) {
+                    if (i == solu.getListeTournees().get(r.getFirstDay()).size()) {
+                        solu.ajouterClientNouvelleTourneeTruck(r, r.getFirstDay());
+                        break;
+                    }
+                    t = solu.getListeTournees().get(r.getFirstDay()).get(i);
+                    i++;
                 }
             }
-            if (!ok) {
-                solu.ajouterClientNouvelleTourneeTruck(r, r.getFirstDay()); // je sais pas trop pour le jour
-                // truck infini encore ?
-            }
         }
-
 
         for (Request r : instance.getRequests()) {
             boolean ok = false;

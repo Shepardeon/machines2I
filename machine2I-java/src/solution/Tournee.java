@@ -90,6 +90,11 @@ public abstract class Tournee {
 
     public abstract boolean check();
 
+    /**
+     * Fonction qui vérifie si une position est valide
+     * @param pos la position à tester
+     * @return true si la position est valide et false sinon
+     */
     public boolean isPositionvalide(int pos) {
         return pos >= 0 && pos < listRequest.size();
     }
@@ -153,47 +158,40 @@ public abstract class Tournee {
      * Fonction qui renvoie le point de la tournée qui précède la position pos
      * @param pos la position à interroger
      * @return le point en position pos-1, si pos <= 0 il s'agit du dépot
-
+     */
     private Point getPrec(int pos) {
-        if (pos < 0 || pos > listClient.size()) return null;
+        if (pos < 0 || pos > listRequest.size()) return null;
         if (pos == 0) return depot;
-        return listClient.get(pos-1);
+        return listRequest.get(pos-1).getClient();
     }
 
     /**
      * Fonction qui renvoie le point de la tournée qui est en position pos
      * @param pos la position à interroger
      * @return le point en position pos, si pos >= taille listeClients ils s'agit du dépot
-
+     */
     private Point getCurrent(int pos) {
-        if (pos < 0 || pos > listClient.size()) return null;
-        if (pos == listClient.size()) return depot;
-        return listClient.get(pos);
-    }*/
+        if (pos < 0 || pos > listRequest.size()) return null;
+        if (pos == listRequest.size()) return depot;
+        return listRequest.get(pos).getClient();
+    }
 
     /**
      * Fonction qui renvoie le point suivant la position pos
      * @param pos la position actuelle
      * @return le point en position pos+1 si pos est la position du dernier client alors pos+1 est le dépôt
-
-    private Point getNext(int pos) {
-        if (pos+1 <= 0 || pos+1 > listClient.size()) return null;
-        if (pos+1 == listClient.size()) return depot;
-        return listClient.get(pos+1);
-    }*/
-
-    /**
-     * Fonction qui vérifie si une position est valide
-     * @param pos la position à tester
-     * @return true si la position est valide et false sinon
      */
-
+    private Point getNext(int pos) {
+        if (pos+1 <= 0 || pos+1 > listRequest.size()) return null;
+        if (pos+1 == listRequest.size()) return depot;
+        return listRequest.get(pos+1).getClient();
+    }
 
     /**
      * Fonction qui teste si une position est valide pour une insertion
      * @param pos la position où insérer
      * @return true si la position est possible et false sinon
-
+     */
     private boolean isPositionInsertionValide(int pos) {
         return getPrec(pos) != null && getCurrent(pos) != null;
     }

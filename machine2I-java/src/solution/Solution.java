@@ -51,6 +51,12 @@ public class Solution {
         this.machineCost = 0;
         this.instance = instance;
         this.listeTournees = new HashMap<Integer, LinkedList<Tournee>>();
+
+        for (int i = 0; i < instance.getDays(); i++)
+            listeTournees.put(i, new LinkedList<>());
+
+        for ( Tech t : instance.getTechs())
+            t.initDays(Solution.this.instance.getDays());
     }
 
     public Solution(Solution sol) {
@@ -235,6 +241,18 @@ public class Solution {
         coutTotal += cout * truckDistanceCost;
 
         return true;
+    }
+
+    public boolean ajouterClientDerniereTourneeTruck(Request r) {
+        if (r == null || listeTournees.isEmpty()) return false;
+
+        LinkedList<Tournee> tournees = listeTournees.get(r.getFirstDay());
+        if (tournees.isEmpty()) return false;
+
+        // Normalement vu qu'on fait les trucks et les techs à part ça devrait pas poser de pb
+        Tournee t = tournees.getLast();
+
+        return ajouterClientTourneeTruck(r, t);
     }
 
     public boolean ajouterClientTourneeTech(Request r, TourneeTech t) {
