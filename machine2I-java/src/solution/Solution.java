@@ -166,13 +166,14 @@ public class Solution {
         if(current==null) return false;
 
         Tournee t = new TourneeTech(instance, jour, current);
+        boolean test = current.isUsed();
 
         if(!t.ajouterRequest(r)) return false;
 
         if (listeTournees.get(jour) == null)
             listeTournees.put(jour, new LinkedList<>());
 
-        current.ajouterRequest(r,jour);
+        current.ajouterRequest(r,jour,t);
         listeTournees.get(jour).add(t);
 
         int machine = calculerCostRetard(r,jour);
@@ -184,16 +185,7 @@ public class Solution {
         totaltechCost += cout;
         coutTotal += cout;
         numberTechnicianDays++;
-        boolean test = false;
-        for(int j=1;j<= listeTournees.size();j++){
-            for (Tournee tournee : listeTournees.get(j)){
-                if(tournee instanceof TourneeTech){
-                    if( t != tournee && ((TourneeTech) tournee).getTechnician() == ((TourneeTech) t).getTechnician()){
-                        test = true;
-                    }
-                }
-            }
-        }
+
         if (!test){
             numberTechniciansUsed++;
             totaltechCost += techCost;
@@ -217,7 +209,7 @@ public class Solution {
         int i=0;
         while(current==null && i < instance.getTechs().size()){
             Tech t = instance.getTechs().get(i);
-            if(t.isDisponible(r,j)){
+            if(t.isDisponible(r,j,null)){
                 current = t;
             }
             i++;
@@ -236,65 +228,34 @@ public class Solution {
         if (listeTournees.get(t.jour) == null)
             listeTournees.put(t.jour, new LinkedList<>());
 
+        int cout = t.calculCoutAjoutRequest(r);
         if(!t.ajouterRequest(r)) return false;
-        truckDistance += t.getCoutTotal();
-        int cout = t.getCoutTotal()*truckDistanceCost + truckDayCost;
-        totaltruckCost += cout;
-        coutTotal += cout;
-        int used = 0;
-        for(Tournee tournee : listeTournees.get(t.jour)){
-            if(tournee instanceof TourneeTruck)
-                used++;
-                totaltruckCost += truckCost;
-                coutTotal += truckCost;
-        }
-        if(used > numberTrucksUsed){
-            numberTrucksUsed = used;
-        }
-        numberTruckDays++;
+        truckDistance += cout;
+        totaltruckCost += cout * truckDistanceCost;
+        coutTotal += cout * truckDistanceCost;
 
         return true;
     }
 
     public boolean ajouterClientTourneeTech(Request r, TourneeTech t) {
+        int distance = t.calculCoutAjoutRequest(r);
         if (r == null) return false;
-
-        Tech current = techFetcher(r, t.jour);
-
-        if(current==null) return false;
 
         if(!t.ajouterRequest(r)) return false;
 
-        listeTournees.computeIfAbsent(t.jour, k -> new LinkedList<>());
+        t.getTechnician().ajouterRequest(r, t.jour,t);
 
-        current.ajouterRequest(r,t.jour);
-        listeTournees.get(t.jour).add(t);
 
         int machine = calculerCostRetard(r,t.jour);
         machineCost += machine;
         coutTotal += machine;
 
-        technicianDistance += t.getCoutTotal();
+        technicianDistance += distance;
         t.check();
-        int cout = t.getCoutTotal()*techDistanceCost + techDayCost;
+        int cout = distance*techDistanceCost;
         totaltechCost += cout;
         coutTotal += cout;
-        numberTechnicianDays++;
-        boolean test = false;
-        for(int j=1;j<= listeTournees.size();j++){
-            for (Tournee tournee : listeTournees.get(j)){
-                if(tournee instanceof TourneeTech){
-                    if( t != tournee && ((TourneeTech) tournee).getTechnician() == ((TourneeTech) t).getTechnician()){
-                        test = true;
-                    }
-                }
-            }
-        }
-        if (!test){
-            numberTechniciansUsed++;
-            totaltechCost += techCost;
-            coutTotal += techCost;
-        }
+
         return true;
     }
 

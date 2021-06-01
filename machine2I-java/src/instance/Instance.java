@@ -80,6 +80,8 @@ public class Instance {
 
     public int getTruckCapacity(){ return truckCapacity; }
 
+    public int getTruckMaxDistance(){ return truckMaxDistance; }
+
     public int getTruckDistanceCost() {
         return truckDistanceCost;
     }

@@ -10,14 +10,18 @@ import java.util.Map;
 public class TourneeTruck extends Tournee {
     private int capacity;
     private int maxCapacity;
-    private Map<Integer, Machine> mapMachines;
+    private int distance;
+    private int maxDistance;
+    private Map<Integer,Machine> mapMachines;
 
     public TourneeTruck(Instance instance, int jour) {
         super(instance, jour);
         this.depot = instance.getDepot();
-        this.capacity = instance.getTruckCapacity();
+        this.capacity = 0;
         this.mapMachines = instance.getMapMachines();
         this.maxCapacity = instance.getTruckCapacity();
+        this.distance = 0;
+        this.maxDistance = instance.getTruckMaxDistance();
     }
 
     public TourneeTruck(TourneeTruck tourneeTruck) {
@@ -26,6 +30,8 @@ public class TourneeTruck extends Tournee {
         this.capacity = tourneeTruck.getCapacity();
         this.mapMachines = tourneeTruck.getMapMachines();
         this.maxCapacity = tourneeTruck.getMaxCapacity();
+        this.distance= tourneeTruck.getDistance();
+        this.maxDistance = tourneeTruck.getMaxDistance();
     }
 
     public int getCapacity() {
@@ -36,6 +42,10 @@ public class TourneeTruck extends Tournee {
         return maxCapacity;
     }
 
+    public int getDistance(){ return distance; }
+
+    public int getMaxDistance(){ return maxDistance; }
+
     public Map<Integer, Machine> getMapMachines() {
         return new LinkedHashMap<Integer, Machine>(mapMachines);
     }
@@ -43,13 +53,14 @@ public class TourneeTruck extends Tournee {
     @Override
     public boolean ajouterRequest(Request request) {
         if(canInsererRequest(request)){
+            int cout =calculCoutAjoutRequest(request);
             request.setJourLivraison(jour);
 
             coutTotal += this.calculCoutAjoutRequest(request);
             this.listRequest.add(request);
             //System.out.println(coutTotal); // TODO : OOF
-            capacity += this.instance.getMapMachines().get(request.getIdMachine()).getSize();
-
+            capacity += this.instance.getMapMachines().get(request.getIdMachine()).getSize() * request.getNbMachine();
+            distance += cout;
             return true;
         }
         return false;
@@ -59,7 +70,19 @@ public class TourneeTruck extends Tournee {
     public boolean canInsererRequest(Request request) {
         if (request == null) return false;
 
-        return capacity + mapMachines.get(request.getIdMachine()).getSize() * request.getNbMachine() > maxCapacity;
+        if(request.getFirstDay() > this.jour)
+            return false;
+
+        if (request.getLastDay() <= this.jour)
+            return false;
+
+        if (capacity + (mapMachines.get(request.getIdMachine()).getSize() * request.getNbMachine()) > maxCapacity)
+            return false;
+
+        if (distance + calculCoutAjoutRequest(request) > maxDistance){
+            return false;
+        }
+        return true;
     }
 
     @Override

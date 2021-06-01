@@ -9,6 +9,7 @@ import network.Point;
 
 public class TourneeTech extends Tournee {
     private Tech technician;
+    private int distance;
 
     public TourneeTech(Instance instance, int jour, Tech technician) {
         super(instance, jour);
@@ -32,7 +33,7 @@ public class TourneeTech extends Tournee {
         if(canInsererRequest(request)){
 
             coutTotal += this.calculCoutAjoutRequest(request);
-            technician.ajouterRequest(request, jour);
+            technician.ajouterRequest(request, jour, this);
             //System.out.println(coutTotal); // TODO : OOF
             this.listRequest.add(request);
             return true;
@@ -42,7 +43,16 @@ public class TourneeTech extends Tournee {
 
     @Override
     public boolean canInsererRequest(Request request) {
-        return technician.isDisponible(request, jour) && request.getJourLivraison() < jour;
+        if (request.getJourLivraison() >= this.jour)
+            return false;
+
+        if(request.getLastDay() < this.jour)
+            return false;
+
+        if(technician.getDistance(jour) + calculCoutAjoutRequest(request) > technician.getMaxDistance())
+            return false;
+
+        return technician.isDisponible(request, jour, this) && request.getJourLivraison() < jour;
     }
 
     @Override

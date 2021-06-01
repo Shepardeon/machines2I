@@ -7,6 +7,9 @@ import solution.Tournee;
 import solution.TourneeTech;
 import solution.TourneeTruck;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+
 public class Ajout implements Solveur {
 
     @Override
@@ -40,13 +43,18 @@ public class Ajout implements Solveur {
             ok = false;
             int day = 0;
             for (int j = 0; j <= solu.getListeTournees().size(); j++) {
-                for (Tournee t : solu.getListeTournees().get(j)) {
-                    if (t instanceof TourneeTech) {
-                        if (!ok && solu.ajouterClientTourneeTech(r, (TourneeTech) t)) ok = true;
+                if (solu.getListeTournees().get(j) != null){
+                    for (Tournee t : solu.getListeTournees().get(j)) {
+                        if (t instanceof TourneeTech) {
+                            if (!ok && solu.ajouterClientTourneeTech(r, (TourneeTech) t)) ok = true;
+                        }
                     }
                 }
             }
-            while (!ok && solu.ajouterClientNouvelleTourneeTech(r, r.getFirstDay() + day + 1)) day++;
+            while (!ok && solu.ajouterClientNouvelleTourneeTech(r, r.getJourLivraison() + day + 1)){
+                day++;
+                ok = true;
+            }
         }
 
         return solu;
