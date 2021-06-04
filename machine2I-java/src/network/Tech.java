@@ -10,31 +10,31 @@ import java.util.Map;
 public class Tech {
 
     private class Etat {
-        private Tournee disponible;
         private int fatigue;
         private int demande;
+        private Point position;
         private int distance;
 
-        public Etat(Tournee disponible, int fatigue){
-            this.disponible = disponible;
+        public Etat(Point position, int fatigue){
+            this.position = position;
             this.fatigue = fatigue;
             this.demande = 0;
             this.distance = 0;
         }
 
-        public void setDisponible(Tournee valeur){
-            this.disponible = valeur;
+        public void setPosition(Point valeur){
+            this.position = valeur;
         }
 
         public void setFatigue(int valeur){
             this.fatigue = valeur;
         }
 
-        public void ajouterDistance(int valeur){ this.distance += distance; }
+        public void ajouterDistance(int valeur){ this.distance += valeur; }
 
         public int getDistance(){ return distance; }
 
-        public void ajouterDemande(int valeur){this.demande += demande; }
+        public void ajouterDemande(int valeur){this.demande += valeur; }
 
     }
 
@@ -63,75 +63,57 @@ public class Tech {
         return Integer.MAX_VALUE;
     }
 
+
+    public Point getPosition(int jour){ return disponibilite.get(jour).position; }
+
     public int getMaxDistance(){
         return maxDistance;
     }
 
-    public boolean isDisponible(Request request, int jour, Tournee t){
+    public boolean isDisponible(Request request, int jour){
         if(this.machines.get(request.getIdMachine()-1) != 1) return false;
-        if(this.disponibilite.get(jour).disponible != null && this.disponibilite.get(jour).disponible != t ){
-            //System.out.println("non");
-            return false;
-        }
 
-        /*
-        if(jour > 1){
-            int x = 1;
-            int fatigue = 0;
-            while(disponibilite.get(jour+x) != null && !disponibilite.get(jour+x).disponible){
-                fatigue = disponibilite.get(jour+x).fatigue;
-                x++;
-            }
-            if(this.disponibilite.get(jour-1).disponible &&
-                   this.disponibilite.get(jour-1).fatigue + fatigue + 1 > 5
-            ){
+        if(disponibilite.get(jour).fatigue == 0) {
+            if (disponibilite.get(jour - 2) != null && disponibilite.get(jour - 2).fatigue == 5)
                 return false;
+
+            int fat = 0;
+            if (disponibilite.get(jour - 1) != null) {
+                fat = disponibilite.get(jour - 1).fatigue;
             }
-        }*/
 
-        if(disponibilite.get(jour-2) != null && disponibilite.get(jour-2).fatigue == 5)
-            return false;
-
-        int fat = 0;
-        if(disponibilite.get(jour-1) != null){
-            fat = disponibilite.get(jour-1).fatigue;
-        }
-        int i = 1;
-        while(disponibilite.get(jour+i) != null && disponibilite.get(jour+i).disponible != null){
-            fat++;
-        }
-        if(
-            fat+1 > 5 ||
-            (fat+1 == 5 && disponibilite.get(jour+i+2) != null && disponibilite.get(jour+i+2).disponible != null)
-        )
-            return false;
-
-        if(idTechnician == 1 && jour == 8){
-            int j = 1;
-            while(disponibilite.get(j) != null) {
-                System.out.println("Jour =" + j);
-                System.out.println("Disponibilité =" + disponibilite.get(j).disponible);
-                System.out.println("Fatigue =" + disponibilite.get(j).fatigue);
-                j++;
+            int i = 1;
+            while (disponibilite.get(jour + i) != null && disponibilite.get(jour + i).fatigue != 0) {
+                fat++;
+                i++;
             }
+            if (
+                    fat + 1 > 5 ||
+                            (fat + 1 == 5 && disponibilite.get(jour + i + 2) != null && disponibilite.get(jour + i + 2).fatigue != 0)
+            )
+                return false;
         }
 
-        return request.getNbMachine() <= maxDemande && this.depot.getCoutVers(request.getClient())*2 <= maxDistance;
+        return disponibilite.get(jour).demande + 1 <= maxDemande &&
+                (disponibilite.get(jour).distance +
+                disponibilite.get(jour).position.getCoutVers(request.getClient())+
+                request.getClient().getCoutVers(depot) -
+                disponibilite.get(jour).position.getCoutVers(depot)) <= maxDistance;
     }
 
     public void ajouterRequest(Request request,int jour, Tournee t){
 
-        if(isDisponible(request, jour, t)){
+        if(isDisponible(request, jour)){
             disponibilite.get(jour).ajouterDistance(t.calculCoutAjoutRequest(request));
             disponibilite.get(jour).ajouterDemande(1);
             int fatigue = 0;
             if(jour != 1) {
                 fatigue = this.disponibilite.get(jour - 1).fatigue;
             }
-            disponibilite.get(jour).setDisponible(t);
+            disponibilite.get(jour).setPosition(request.getClient());
             disponibilite.get(jour).setFatigue(fatigue+1);
             int i = jour;
-            while(disponibilite.get(i) != null && disponibilite.get(i).disponible != null){
+            while(disponibilite.get(i) != null && disponibilite.get(i).fatigue != 0){
                 disponibilite.get(i).fatigue = fatigue+1;
                 i++;
             }
@@ -141,7 +123,7 @@ public class Tech {
     public boolean isUsed(){
         int i = 1;
         while(disponibilite.get(i) != null){
-            if (disponibilite.get(i).disponible != null)
+            if (disponibilite.get(i).fatigue != 0)
                 return true;
             i++;
         }
@@ -150,8 +132,8 @@ public class Tech {
 
     public void initDays(int days) {
         for(int i = 1; i <=days; i++){
-            disponibilite.computeIfAbsent(i, k -> new Etat(null, 0));
-            disponibilite.computeIfPresent(i, (k, v) -> new Etat(null, 0));
+            disponibilite.computeIfAbsent(i, k -> new Etat(depot, 0));
+            disponibilite.computeIfPresent(i, (k, v) -> new Etat(depot, 0));
         }
     }
 

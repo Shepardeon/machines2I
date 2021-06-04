@@ -32,6 +32,7 @@ public abstract class Tournee {
         depot = t.depot;
         jour = t.jour;
         listRequest = new LinkedList<>(t.listRequest);
+        id = incID;
     }
 
     public Tournee() {
@@ -65,6 +66,10 @@ public abstract class Tournee {
     public Point getDepot(){
         return this.depot;
     };
+
+    public int getId(){
+        return id;
+    }
 
     /**
      * Fonction qui renvoie le client à la position pos de la liste de clients

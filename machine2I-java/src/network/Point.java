@@ -62,6 +62,8 @@ public abstract class Point {
      * @return le deltaCout entre ce point et la destination
      */
     public int getCoutVers(Point dest) {
+        if (this == dest)
+            return 0;
         Route r = mapRoutes.get(dest.id);
         if (r == null)
             return Integer.MAX_VALUE;

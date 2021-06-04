@@ -164,10 +164,11 @@ public class Solution {
      * Fonction qui créer une nouvelle tournéeTech et y ajoute un client
      * @param r la request à ajouter à la tournée
      */
-    public boolean ajouterClientNouvelleTourneeTech(Request r, int jour) {
+    public boolean ajouterClientNouvelleTourneeTech(Request r, int jour, Tech current) {
         if (r == null) return false;
 
-        Tech current = techFetcher(r, jour);
+        if(current == null)
+            current = techFetcherNouvelleTournee(r, jour    );
 
         if(current==null) return false;
 
