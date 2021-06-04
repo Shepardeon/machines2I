@@ -116,8 +116,8 @@ public class Instance {
         return mapClients.size();
     }
 
-    public List<Tech> getTechs() {
-        return technicians;
+    public LinkedList<Tech> getTechs() {
+        return new LinkedList<>(technicians);
     }
 
     /**

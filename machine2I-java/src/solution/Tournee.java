@@ -14,6 +14,8 @@ public abstract class Tournee {
     /*
      * PARAMETRE
      */
+    protected static int incID;
+    protected int id;
     protected int coutTotal;
     protected Instance instance;
     protected Point depot;

@@ -49,10 +49,7 @@ public class TourneeTech extends Tournee {
         if(request.getLastDay() < this.jour)
             return false;
 
-        if(technician.getDistance(jour) + calculCoutAjoutRequest(request) > technician.getMaxDistance())
-            return false;
-
-        return technician.isDisponible(request, jour, this) && request.getJourLivraison() < jour;
+        return technician.isDisponible(request, jour);
     }
 
     @Override

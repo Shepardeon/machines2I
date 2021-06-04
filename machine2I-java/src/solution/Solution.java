@@ -182,6 +182,17 @@ public class Solution {
         current.ajouterRequest(r,jour,t);
         listeTournees.get(jour).add(t);
 
+        calculerCostAll(r, jour, t);
+
+        if (!test){
+            numberTechniciansUsed++;
+            totaltechCost += techCost;
+            coutTotal += techCost;
+        }
+        return true;
+    }
+
+    public void calculerCostAll(Request r, int jour, Tournee t) {
         int machine = calculerCostRetard(r,jour);
         machineCost += machine;
         coutTotal += machine;
@@ -191,13 +202,6 @@ public class Solution {
         totaltechCost += cout;
         coutTotal += cout;
         numberTechnicianDays++;
-
-        if (!test){
-            numberTechniciansUsed++;
-            totaltechCost += techCost;
-            coutTotal += techCost;
-        }
-        return true;
     }
 
     public int calculerCostRetard(Request r, int jour){
@@ -215,7 +219,7 @@ public class Solution {
         int i=0;
         while(current==null && i < instance.getTechs().size()){
             Tech t = instance.getTechs().get(i);
-            if(t.isDisponible(r,j,null)){
+            if(t.isDisponible(r,j)){
                 current = t;
             }
             i++;
@@ -231,8 +235,8 @@ public class Solution {
      */
     public boolean ajouterClientTourneeTruck(Request r, Tournee t) {
         if (r == null || listeTournees.isEmpty()) return false;
-        if (listeTournees.get(t.jour) == null)
-            listeTournees.put(t.jour, new LinkedList<>());
+
+        listeTournees.computeIfAbsent(t.jour, k -> new LinkedList<>());
 
         int cout = t.calculCoutAjoutRequest(r);
         if(!t.ajouterRequest(r)) return false;
@@ -246,6 +250,7 @@ public class Solution {
     public boolean ajouterClientDerniereTourneeTruck(Request r) {
         if (r == null || listeTournees.isEmpty()) return false;
 
+        // Les trucks sont sur le jour getFirstDay
         LinkedList<Tournee> tournees = listeTournees.get(r.getFirstDay());
         if (tournees.isEmpty()) return false;
 
@@ -253,6 +258,30 @@ public class Solution {
         Tournee t = tournees.getLast();
 
         return ajouterClientTourneeTruck(r, t);
+    }
+
+    public boolean ajouterClientDerniereTourneeTech(Request r, int jour, Tech techPlusProche) {
+        if (r == null || listeTournees.isEmpty()) return false;
+
+        // Les techs sont sur le jour getFirstDay+1 :)
+        LinkedList<Tournee> tournees = listeTournees.get(jour);
+        if (tournees.isEmpty()) return false;
+
+        // Normalement aucun problème une fois de plus
+        TourneeTech t = (TourneeTech) tournees.getLast();
+
+        if (techPlusProche == t.getTechnician())
+            return ajouterClientTourneeTech(r, t);
+
+        if (techPlusProche.getPosition(jour) != techPlusProche.getDepot()) {
+            LinkedList<Tournee> lstTournees = listeTournees.get(jour);
+
+            for (Tournee tour : lstTournees)
+                if (tour instanceof TourneeTech && ((TourneeTech) tour).getTechnician() == techPlusProche)
+                    return ajouterClientTourneeTech(r, (TourneeTech) tour);
+        }
+
+        return ajouterClientNouvelleTourneeTech(r, jour, techPlusProche);
     }
 
     public boolean ajouterClientTourneeTech(Request r, TourneeTech t) {
