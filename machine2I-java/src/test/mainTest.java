@@ -44,6 +44,7 @@ public class mainTest {
 
             Export exp = new Export(solu);
             exp.ExporterSolution();
+
         } catch (
         ReaderException ex) {
             System.out.println(ex.getMessage());

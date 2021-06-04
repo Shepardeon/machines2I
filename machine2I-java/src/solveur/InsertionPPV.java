@@ -30,8 +30,9 @@ public class InsertionPPV implements Solveur {
             if (!sol.ajouterClientDerniereTourneeTruck(r))
                 sol.ajouterClientNouvelleTourneeTruck(r, r.getFirstDay());
 
-            // whoop whoop faudrait amélio install les machines un jour...
-            sol.ajouterClientNouvelleTourneeTech(r, r.getJourLivraison() + 1);
+            if (!sol.ajouterClientDerniereTourneeTech(r, r.getFirstDay() + 1, t))
+                sol.ajouterClientNouvelleTourneeTech(r, r.getJourLivraison() + 1, t);
+
             listRequest.remove(r);
             r = plusProcheVoisinTruck(r, listRequest);
             t = plusProcheVoisinTech(r, listTechs);

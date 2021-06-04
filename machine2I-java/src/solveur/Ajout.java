@@ -53,7 +53,7 @@ public class Ajout implements Solveur {
                     }
                 }
             }
-            while (!ok && solu.ajouterClientNouvelleTourneeTech(r, r.getJourLivraison() + day + 1)){
+            while (!ok && solu.ajouterClientNouvelleTourneeTech(r, r.getJourLivraison() + day + 1, null)){
                 day++;
                 ok = true;
             }

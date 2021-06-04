@@ -212,7 +212,7 @@ public class Solution {
                 (jour - (r.getJourLivraison()+1));
     }
 
-    public Tech techFetcher(Request r, int j){
+    public Tech techFetcherNouvelleTournee(Request r, int j){
         if (r == null) return null;
         Tech current = null;
 
