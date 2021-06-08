@@ -5,6 +5,7 @@ import instance.Request;
 import network.Client;
 import network.Depot;
 import network.Point;
+import operateur.*;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -143,23 +144,6 @@ public abstract class Tournee {
 
         return test;
     }
-    /**
-     * Fonction textant la possibilité de fusionner deux tournées
-     * @param tournee la tournée à fusionner
-     * @return true si la fusion est possible et false sinon
-
-    private boolean canFusionnerTournee(Tournee tournee) {
-        if (tournee == null || tournee.isEmpty() || this.isEmpty()) return false;
-        return tournee != this && this.demandeTotale + tournee.demandeTotale < capacite;
-    }*/
-
-    /**
-     * Fonction qui calcule en O(1) le deltaCout total de la tournée à partir du dernier client ajouté
-     * @param c le dernier client ajouté à la liste
-
-    private void calculerCoutTotal(Client c) {
-        coutTotal += deltaCoutInsertion(listClient.size(), c);
-    }*/
 
     /**
      * Fonction qui renvoie le point de la tournée qui précède la position pos
@@ -203,161 +187,99 @@ public abstract class Tournee {
         return getPrec(pos) != null && getCurrent(pos) != null;
     }
 
-    /**
-     * Fonction qui calcule en O(1) le deltaCout total de la tournée à partir du dernier client ajouté en position pos
-     * @param pos la position d'insertion du client
-     * @param client le client à insérer
-     * @return le deltaCout de l'insertion du client à la position donnée (= infini si la position est invalide)
-
-    public int deltaCoutInsertion(int pos, Client client) {
-        if (!isPositionInsertionValide(pos)) return Integer.MAX_VALUE;
-
-        if (listClient.isEmpty())
-            return 2 * client.getCoutVers(depot);
-        else {
-            Point prec = getPrec(pos);
-            Point curr = getCurrent(pos);
-
-            if (prec == null || curr == null) return Integer.MAX_VALUE;
-
-            return prec.getCoutVers(client) + client.getCoutVers(curr) - prec.getCoutVers(curr);
-        }
-    }
-
-    public int deltaCoutInsertionInter(int pos, Client client) {
-        if (!canInsererClient(client)) return Integer.MAX_VALUE;
-        return deltaCoutInsertion(pos, client);
-    }
-
-    /**
-     * Fonction qui calcule le deltaCout pour fusionner une tournée avec cette tournée
-     * @param aFusionner la tournée à fusionner avec cette instance
-     * @return le deltaCout engendré par la fusion
-
-    public int deltaCoutFusion(Tournee aFusionner) {
-        if (aFusionner == null || listClient.isEmpty() || aFusionner.listClient.isEmpty()) return Integer.MAX_VALUE;
-
-        Client dernier = listClient.getLast();
-        Client premier = aFusionner.listClient.getLast();
-
-        return dernier.getCoutVers(premier) - dernier.getCoutVers(depot) - depot.getCoutVers(premier);
-    }
-
-    /**
-     * Fonction qui calcule le deltaCout pour supprimer le client en position pos de cette tournée
-     * @param pos la position du client à retirer
-     * @return le deltaCout engendré par la suppression du client de la tournée
-
-    public int deltaCoutSupression(int pos) {
-        if (!isPositionvalide(pos)) return Integer.MAX_VALUE;
-        if (listClient.size() == 1) return -getCoutTotal();
-
-        Point prec = getPrec(pos);
-        Point curr = getCurrent(pos);
-        Point next = getNext(pos);
-
-        if (prec == null || curr == null || next == null) return Integer.MAX_VALUE;
-
-        return prec.getCoutVers(next) - prec.getCoutVers(curr) - curr.getCoutVers(next);
-    }
-
-    /**
-     * Fonction qui calcule le deltaCout pour déplacer le client d'une position I à une position J
-     * @param posI la position de départ du client
-     * @param posJ la position d'insertion du client
-     * @return le deltaCout engendré par le déplacement du client
-
-    public int deltaCoutDeplacement(int posI, int posJ) {
-        if (!doublePositionValide(posI, posJ)) return Integer.MAX_VALUE;
-        return deltaCoutSupression(posI) + deltaCoutInsertion(posJ, getClientAt(posI));
-    }
-
     private boolean doublePositionValide(int pI, int pJ) {
         return isPositionvalide(pI) && isPositionvalide(pJ) && pI != pJ && Math.abs(pI - pJ) != 1;
-    }*/
-
-    /**
-     * Fonction qui calcule le deltaCout pour échanger les clients en position I et J
-     * @param posI la position du client I
-     * @param posJ la position du client J
-     * @return le deltaCout engendré par l'échange
-
-    public int deltaCoutEchange(int posI, int posJ) {
-        if (!isPositionvalide(posI) || !isPositionvalide(posJ)) return Integer.MAX_VALUE;
-        if (posI == posJ) return 0;
-        if (posJ < posI) return deltaCoutEchange(posJ, posI);
-        if (posI+1 == posJ) return deltaCoutEchangeConsecutif(posI);
-        return deltaCoutRemplacement(posI, posJ);
-    }*/
-
-    /**
-    private int deltaCoutEchangeConsecutif(int pos) {
-        Client i = listClient.get(pos);
-        Client j = listClient.get(pos+1);
-        Point prec = getPrec(pos);
-        Point next = getNext(pos+1);
-
-        if (prec == null || next == null) return Integer.MAX_VALUE;
-
-        return prec.getCoutVers(j) + i.getCoutVers(next) - (prec.getCoutVers(i) + j.getCoutVers(next));
     }
 
-    private int deltaCoutRemplacement(int posI, int posJ) {
-        Client i = listClient.get(posI);
-        Point precI = getPrec(posI);
-        Point nextI = getNext(posI);
+    public int deltaCoutDeplacementTech(int pI, int pJ) {
+        return deltaCoutDeplacementTruck(pI, pJ); // ara ara
+    }
 
-        Client j = listClient.get(posJ);
-        Point precJ = getPrec(posJ);
-        Point nextJ = getNext(posJ);
+    public boolean doDeplacementTech(IntraDeplacementTech infos) {
+        if (infos == null || !infos.isMouvementRealisable()) return false;
+        int i = infos.getPositionI(); int j = infos.getPositionJ();
+        if (!doublePositionValide(i, j)) return false;
 
-        if (precI == null || nextI == null || precJ == null || nextJ == null) return Integer.MAX_VALUE;
+        Request r = infos.getRequestI();
 
-        return precI.getCoutVers(j) + j.getCoutVers(nextI) + precJ.getCoutVers(i) + i.getCoutVers(nextJ)
-                - (precI.getCoutVers(i) + i.getCoutVers(nextI) + precJ.getCoutVers(j) + nextJ.getCoutVers(j));
-    }*/
+        listRequest.remove(i);
+        if (i < j)
+            j--;
+        listRequest.add(j, r);
+
+        coutTotal += infos.getDeltaCout();
+
+        return true;
+    }
+
+    public int deltaCoutDeplacementTruck(int posI, int posJ){
+        if(isPositionvalide(posI) && isPositionvalide(posJ)){
+            return getCurrent(posI).getCoutVers(getCurrent(posJ))
+                    +getPrec(posJ).getCoutVers(getCurrent(posI))
+                    +getPrec(posI).getCoutVers(getNext(posI))
+                    -getPrec(posI).getCoutVers(getCurrent(posI))
+                    -getCurrent(posI).getCoutVers(getNext(posI))
+                    -getPrec(posJ).getCoutVers(getCurrent(posJ));
+        }
+        return Integer.MAX_VALUE;
+    }
+
+    public boolean doDeplacementTruck(IntraDeplacementTruck infos) {
+        if (infos == null || !infos.isMouvementRealisable()) return false;
+        int i = infos.getPositionI(); int j = infos.getPositionJ();
+        if (!doublePositionValide(i, j)) return false;
+
+        Request r = infos.getRequestI();
+
+        listRequest.remove(i);
+        if (i < j)
+            j--;
+        listRequest.add(j, r);
+
+        coutTotal += infos.getDeltaCout();
+
+        return true;
+    }
 
     /**
-     * Fonction qui calcule le cout de remplacement du client à la position pos par le client c
-     * @param pos la position du client à remplacer
-     * @param c le client qui remplace
-     * @return le delatCout engendré
-     
-    public int deltaCoutRemplacement(int pos, Client c) {
-        if (!isPositionvalide(pos) || c == null) return Integer.MAX_VALUE;
-
-        Client i = listClient.get(pos);
-        Point prec = getPrec(pos);
-        Point next = getNext(pos);
-
-        if (prec == null || next == null) return Integer.MAX_VALUE;
-        if (demandeTotale + c.getDemande() - i.getDemande() > capacite) return Integer.MAX_VALUE;
-
-        return prec.getCoutVers(c) + c.getCoutVers(next) - (prec.getCoutVers(i) + i.getCoutVers(next));
-    }*/
-
-
-    /**
-     * Fonction qui permet de tester si une tournée est réalisable ou non
-     * @return true si la tournée est réalisable et false sinon
-    */
-
-
-    /**
-     * Fonction qui vérifie que la demande totale et le coût total sont corrects
-     * @return true si tout est correct et false sinon
-
-    private boolean checkCalculsDemandeCoutTotal() {
-        return checkCalculerDemandeTotale() && checkCalculerCoutTotal();
-    }*/
-
-    /**
-     * Fonction qui calcule la demande totale en itérant sur tous les clients et vérifie si elle est conorme à la
-     * demande totale de la tournée
-     * @return true si la demande totale théorique correspond à la demande totale effective
+     * Fonction qui renvoie le meilleur opérateur intra tournée
+     * @param type le type d'opérateur
+     * @return le meilleur opérateur de ce type
      */
+    public OperateurIntraTournee getMeilleurOperateurIntra(TypeOperateurLocal type) {
+        OperateurIntraTournee meilleur = (OperateurIntraTournee) OperateurLocal.getOperateur(type);
 
+        for (int i = 0; i < listRequest.size(); i++) {
+            for (int j = 0; j < listRequest.size(); j++) {
+                if (i == j) continue;
+                OperateurIntraTournee op = (OperateurIntraTournee) OperateurLocal.getOperateurIntra(type, this, i, j);
+                if (op.isMeilleur(meilleur))
+                    meilleur = op;
+            }
+        }
 
+        return meilleur;
+    }
+
+    /**
+     * Fonction qui renvoie le meilleur opérateur inter tournée
+     * @param autreTournee l'autre tournée
+     * @param type le type d'opérateur
+     * @return le meilleur opérateur de ce type
+     */
+    public OperateurInterTournee getMeilleurOperateurInter(Tournee autreTournee, TypeOperateurLocal type) {
+        OperateurInterTournee meilleur = (OperateurInterTournee) OperateurLocal.getOperateur(type);
+
+        for (int i = 0; i < listRequest.size(); i++) {
+            for (int j = 0; j < autreTournee.listRequest.size(); j++) {
+                OperateurInterTournee op = (OperateurInterTournee) OperateurLocal.getOperateurInter(type, this, autreTournee, i, j);
+                if (op.isMeilleur(meilleur))
+                    meilleur = op;
+            }
+        }
+
+        return meilleur;
+    }
 
     @Override
     public String toString() {

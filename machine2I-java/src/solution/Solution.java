@@ -3,6 +3,10 @@ package solution;
 import instance.Instance;
 import instance.Request;
 import network.Tech;
+import operateur.OperateurInterTournee;
+import operateur.OperateurIntraTournee;
+import operateur.OperateurLocal;
+import operateur.TypeOperateurLocal;
 
 import java.util.*;
 
@@ -168,7 +172,7 @@ public class Solution {
         if (r == null) return false;
 
         if(current == null)
-            current = techFetcherNouvelleTournee(r, jour    );
+            current = techFetcherNouvelleTournee(r, jour);
 
         if(current==null) return false;
 
@@ -180,7 +184,9 @@ public class Solution {
         if (listeTournees.get(jour) == null)
             listeTournees.put(jour, new LinkedList<>());
 
-        current.ajouterRequest(r,jour,t);
+        if(!current.ajouterRequest(r,jour,t))
+            return false;
+
         listeTournees.get(jour).add(t);
 
         calculerCostAll(r, jour, t);
@@ -220,7 +226,7 @@ public class Solution {
         int i=0;
         while(current==null && i < instance.getTechs().size()){
             Tech t = instance.getTechs().get(i);
-            if(t.isDisponible(r,j)){
+            if(t.isDisponible(r,j,null)){
                 current = t;
             }
             i++;
@@ -266,7 +272,7 @@ public class Solution {
 
         // Les techs sont sur le jour getFirstDay+1 :)
         LinkedList<Tournee> tournees = listeTournees.get(jour);
-        if (tournees.isEmpty()) return false;
+        if (tournees == null || tournees.isEmpty()) return false;
 
         // Normalement aucun problème une fois de plus
         TourneeTech t = (TourneeTech) tournees.getLast();
@@ -291,9 +297,6 @@ public class Solution {
 
         if(!t.ajouterRequest(r)) return false;
 
-        t.getTechnician().ajouterRequest(r, t.jour,t);
-
-
         int machine = calculerCostRetard(r,t.jour);
         machineCost += machine;
         coutTotal += machine;
@@ -307,126 +310,89 @@ public class Solution {
         return true;
     }
 
-    /*/**
-     * Fonction qui renvoie la meilleure insertion possible du client c dans cette solution
-     * @param client le client à insérer dans la tournée
-     * @return le meilleur opérateur insérant le client c
-     */
-    /*public Operateur getMeilleureInsertion(Client client) {
-        InsertionClient meilleur = new InsertionClient();
-
-        if (client != null)
-            for (int i = 0; i < listeTournees.size(); i++){
-                InsertionClient toTest = (InsertionClient) listeTournees.get(i).getMeilleureInsertion(client);
-                if (toTest.isMeilleur(meilleur))
-                    meilleur = toTest;
-            }
-
-        return meilleur;
-    }*/
-
-    /*/**
-     * Fonction qui renvoie la meilleure fusion de tournées possible
-     * @return le meilleur opérateur fusionnant deux tournées
-     */
-    /*public Operateur getMeilleureFusion() {
-        FusionTournee meilleur = new FusionTournee();
-
-        for (Tournee tournee : listeTournees) {
-            for (Tournee aFusionner : listeTournees) {
-                FusionTournee toTest = new FusionTournee(tournee, aFusionner);
-                if (toTest.isMeilleur(meilleur))
-                    meilleur = toTest;
-            }
-        }
-
-        return meilleur;
-    }*/
-
-    /*/**
+    /**
      * Fonction qui renvoie le meilleur opérateur intra solution
      * @param type le type d'opérateur
      * @return le meilleur opérateur de ce type
      */
-    /*private OperateurIntraTournee getMeilleurOperateurIntra(TypeOperateurLocal type) {
+    private OperateurIntraTournee getMeilleurOperateurIntra(TypeOperateurLocal type) {
         OperateurIntraTournee meilleur = (OperateurIntraTournee) OperateurLocal.getOperateur(type);
 
-        for (Tournee tournee : listeTournees) {
-            OperateurIntraTournee toTest = tournee.getMeilleurOperateurIntra(type);
-            if (toTest.isMeilleur(meilleur))
-                meilleur = toTest;
-        }
-
-        return meilleur;
-    }*/
-
-    /*/**
-     * Fonction qui renvoie le meilleur opérateur inter solution
-     * @param type le type d'opérateur
-     * @return le meilleur opérateur de ce type
-     */
-    /*private OperateurInterTournee getMeilleurOperateurInter(TypeOperateurLocal type) {
-        OperateurInterTournee meilleur = (OperateurInterTournee) OperateurLocal.getOperateur(type);
-
-        for (int i = 0; i < listeTournees.size(); i++) {
-            for (int j = i; j < listeTournees.size(); j++) {
-                if (i == j) continue;
-                Tournee tournee = listeTournees.get(i); Tournee autreTournee = listeTournees.get(j);
-                OperateurInterTournee toTest = tournee.getMeilleurOperateurInter(autreTournee, type);
+        for(int jour = 1; jour <= listeTournees.size(); jour++) {
+            for (Tournee tournee : listeTournees.get(jour)) {
+                OperateurIntraTournee toTest = tournee.getMeilleurOperateurIntra(type);
                 if (toTest.isMeilleur(meilleur))
                     meilleur = toTest;
             }
         }
 
         return meilleur;
-    }*/
+    }
 
-    /*/**
-     * Fonction qui renvoie le meilleur opérateur local pour la solution
+    /**
+     * Fonction qui renvoie le meilleur opérateur inter solution
      * @param type le type d'opérateur
      * @return le meilleur opérateur de ce type
      */
-    /*public OperateurLocal getMeilleurOperateurLocal(TypeOperateurLocal type) {
-        OperateurLocal meilleur = OperateurLocal.getOperateur(type);
+    private OperateurInterTournee getMeilleurOperateurInter(TypeOperateurLocal type) {
+        OperateurInterTournee meilleur = (OperateurInterTournee) OperateurLocal.getOperateur(type);
 
-        for (Tournee tournee : listeTournees) {
-            if (meilleur instanceof OperateurIntraTournee) {
-                meilleur = getMeilleurOperateurIntra(type);
-            }
-            else {
-                meilleur = getMeilleurOperateurInter(type);
+        for (int jour = 1; jour <= listeTournees.size(); jour++) {
+            LinkedList<Tournee> tournees = listeTournees.get(jour);
+            if (tournees == null) continue;
+
+            for (int i = 0; i < tournees.size(); i++) {
+                for (int j = i; j < tournees.size(); j++) {
+                    if (i == j) continue;
+                    Tournee tournee = tournees.get(i); Tournee autreTournee = tournees.get(j);
+                    OperateurInterTournee toTest = tournee.getMeilleurOperateurInter(autreTournee, type);
+                    if (toTest.isMeilleur(meilleur))
+                        meilleur = toTest;
+                }
             }
         }
 
         return meilleur;
-    }*/
+    }
 
-    /*/**
+    /**
+     * Fonction qui renvoie le meilleur opérateur local pour la solution
+     * @param type le type d'opérateur
+     * @return le meilleur opérateur de ce type
+     */
+    public OperateurLocal getMeilleurOperateurLocal(TypeOperateurLocal type) {
+        OperateurLocal meilleur = OperateurLocal.getOperateur(type);
+
+        for (int jour = 1; jour <= listeTournees.size(); jour++) {
+            LinkedList<Tournee> tournees = listeTournees.get(jour);
+            if (tournees == null) continue;
+
+            for (Tournee tournee : tournees) {
+                if (meilleur instanceof OperateurIntraTournee) {
+                    meilleur = getMeilleurOperateurIntra(type);
+                }
+                else {
+                    meilleur = getMeilleurOperateurInter(type);
+                }
+            }
+        }
+
+        return meilleur;
+    }
+
+    /**
      * Fonction qui effectue le mouvement associé à un opérateur local
      * @param infos l'opérateur local
      * @return true si le mouvement a été réalisé et false sinon
      */
-    /*public boolean doMouvementRechercheLocale(OperateurLocal infos) {
+    public boolean doMouvementRechercheLocale(OperateurLocal infos) {
         if (infos == null) return false;
 
         if (infos.isMouvementRealisable())
             coutTotal += infos.getDeltaCout();
 
         return infos.doMovementIfRealisable();
-    }*/
-
-    /*/**
-     * Fonction qui implémente le mouvement lié à l'opérateur d'insertion
-     * @param infos l'opérateur d'insertion
-     * @return true si l'insertion a été implémentée et false sinon
-     */
-    /*public boolean doInsertion(InsertionClient infos) {
-        if (infos == null || !infos.doMovementIfRealisable()) return false;
-
-        coutTotal += infos.getDeltaCout();
-
-        return true;
-    }*/
+    }
 
     /**
      * Fonction qui permet de tester si la solution est réalisable, une solution est réalisable si toutes les

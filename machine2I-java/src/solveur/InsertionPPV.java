@@ -4,7 +4,6 @@ import instance.Instance;
 import instance.Request;
 import network.Tech;
 import solution.Solution;
-import solution.TourneeTech;
 
 import java.util.LinkedList;
 
@@ -30,12 +29,22 @@ public class InsertionPPV implements Solveur {
             if (!sol.ajouterClientDerniereTourneeTruck(r))
                 sol.ajouterClientNouvelleTourneeTruck(r, r.getFirstDay());
 
-            if (!sol.ajouterClientDerniereTourneeTech(r, r.getFirstDay() + 1, t))
-                sol.ajouterClientNouvelleTourneeTech(r, r.getJourLivraison() + 1, t);
+            int day = 1;
+            boolean test = false;
+            while(!test && day < instance.getDays()) {
+                t = plusProcheVoisinTech(r, listTechs, r.getFirstDay()+day);
+                if(t != null) {
+                    if (!sol.ajouterClientDerniereTourneeTech(r, r.getFirstDay() + day, t)) {
+                        test = sol.ajouterClientNouvelleTourneeTech(r, r.getJourLivraison() + day, t);
+                    }else {
+                        test = true;
+                    }
+                }
+                day++;
+            }
 
             listRequest.remove(r);
             r = plusProcheVoisinTruck(r, listRequest);
-            t = plusProcheVoisinTech(r, listTechs);
         }
 
         return sol;

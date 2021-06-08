@@ -6,11 +6,7 @@ import java.util.Map;
 
 import instance.Instance;
 import instance.Request;
-import io.exception.ReaderException;
-import network.Client;
 import network.Depot;
-import network.Point;
-import network.Tech;
 
 import java.io.File;
 
@@ -26,8 +22,8 @@ public class Export {
 		this.solution = solution;
 	}
 	
-	public boolean ExporterSolution(){
-		File monFichier = new File("solutions/solution.txt");
+	public boolean ExporterSolution(String instanceName){
+		File monFichier = new File("solutions/" + instanceName + ".txt");
 		try{
 			if(monFichier.createNewFile())
 				System.out.println("création du fichier solution.txt");
@@ -106,7 +102,7 @@ public class Export {
 			Solution sol = new Solution(instance);
 
 			Export writer = new Export(sol);
-			writer.ExporterSolution();
+			writer.ExporterSolution("solution");
 
 			System.out.println("Solution ecrit avec success !");
 		} catch (Exception ex) {

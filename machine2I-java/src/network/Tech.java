@@ -2,6 +2,7 @@ package network;
 
 import instance.Request;
 import solution.Tournee;
+import solution.TourneeTech;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +15,14 @@ public class Tech {
         private int demande;
         private Point position;
         private int distance;
+        private TourneeTech tournee;
 
         public Etat(Point position, int fatigue){
             this.position = position;
             this.fatigue = fatigue;
             this.demande = 0;
             this.distance = 0;
+            this.tournee = null;
         }
 
         public void setPosition(Point valeur){
@@ -63,6 +66,11 @@ public class Tech {
         return Integer.MAX_VALUE;
     }
 
+    public TourneeTech getTournee(int jour){
+        if (disponibilite.get(jour) != null)
+            return disponibilite.get(jour).tournee;
+        return null;
+    }
 
     public Point getPosition(int jour){ return disponibilite.get(jour).position; }
 
@@ -101,9 +109,14 @@ public class Tech {
                 disponibilite.get(jour).position.getCoutVers(depot)) <= maxDistance;
     }
 
-    public void ajouterRequest(Request request,int jour, Tournee t){
-
-        if(isDisponible(request, jour)){
+    public boolean ajouterRequest(Request request,int jour, Tournee t){
+        if(isDisponible(request, jour, (TourneeTech) t)){
+            if(disponibilite.get(jour).tournee == null) {
+                disponibilite.get(jour).tournee = (TourneeTech) t;
+            }else{
+                if (disponibilite.get(jour).tournee != t)
+                    return false;
+            }
             disponibilite.get(jour).ajouterDistance(t.calculCoutAjoutRequest(request));
             disponibilite.get(jour).ajouterDemande(1);
             int fatigue = 0;

@@ -42,8 +42,6 @@ public class mainTest {
             solu = solvPPV.solve(i);
             System.out.println("PPV " + solu.getCoutTotal());
 
-            Export exp = new Export(solu);
-            exp.ExporterSolution();
 
         } catch (
         ReaderException ex) {
