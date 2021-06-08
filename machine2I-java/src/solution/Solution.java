@@ -280,7 +280,7 @@ public class Solution {
         if (techPlusProche == t.getTechnician())
             return ajouterClientTourneeTech(r, t);
 
-        if (techPlusProche.getPosition(jour) != techPlusProche.getDepot()) {
+        if (techPlusProche.getFatigue(jour) != 0) {
             LinkedList<Tournee> lstTournees = listeTournees.get(jour);
 
             for (Tournee tour : lstTournees)
@@ -292,6 +292,7 @@ public class Solution {
     }
 
     public boolean ajouterClientTourneeTech(Request r, TourneeTech t) {
+
         int distance = t.calculCoutAjoutRequest(r);
         if (r == null) return false;
 

@@ -22,7 +22,7 @@ public class InsertionPPV implements Solveur {
 
         // Insertion PPV pour les tournées truck
         Request r = listRequest.getFirst();
-        Tech t = plusProcheVoisinTech(r, listTechs);
+        Tech t;
 
         while (!listRequest.isEmpty()) {
             if (r == null) r = listRequest.getFirst();
@@ -50,10 +50,8 @@ public class InsertionPPV implements Solveur {
         return sol;
     }
 
-    private Tech plusProcheVoisinTech(Request r, LinkedList<Tech> listTechs) {
+    private Tech plusProcheVoisinTech(Request r, LinkedList<Tech> listTechs, int jour) {
         if (listTechs.isEmpty() || r == null) return null;
-
-        int jour = r.getFirstDay() + 1;
 
         Tech minT = getFirstTechDispo(r, jour, listTechs);
         if (minT == null) return null;
@@ -61,8 +59,7 @@ public class InsertionPPV implements Solveur {
         int min = minT.getPosition(jour).getCoutVers(r.getClient());
 
         for (Tech t : listTechs)
-            // faut vérifier si le mec peut faire la tournée!!!!! (sauf que isDisponible marche pas lol)
-            if (min > t.getPosition(jour).getCoutVers(r.getClient()) && t.isDisponible(r, jour)) {
+            if (min > t.getPosition(jour).getCoutVers(r.getClient()) && t.isDisponible(r, jour, t.getTournee(jour))) {
                 minT = t;
                 min = t.getPosition(jour).getCoutVers(r.getClient());
             }
@@ -74,7 +71,7 @@ public class InsertionPPV implements Solveur {
         if (listTechs.isEmpty()) return null;
 
         for (Tech t : listTechs)
-            if (t.isDisponible(r, jour))
+            if (t.isDisponible(r, jour, t.getTournee(jour)))
                 return t;
 
         return null;

@@ -74,11 +74,16 @@ public class Tech {
 
     public Point getPosition(int jour){ return disponibilite.get(jour).position; }
 
+    public int getFatigue(int jour){ return disponibilite.get(jour).fatigue; }
+
     public int getMaxDistance(){
         return maxDistance;
     }
 
-    public boolean isDisponible(Request request, int jour){
+    public boolean isDisponible(Request request, int jour, TourneeTech tournee){
+        if(disponibilite.get(jour).tournee != null && disponibilite.get(jour).tournee != tournee)
+            return false;
+
         if(this.machines.get(request.getIdMachine()-1) != 1) return false;
 
         if(disponibilite.get(jour).fatigue == 0) {
@@ -130,7 +135,9 @@ public class Tech {
                 disponibilite.get(i).fatigue = fatigue+1;
                 i++;
             }
+            return true;
         }
+        return false;
     }
 
     public boolean isUsed(){
