@@ -49,7 +49,7 @@ public class TourneeTech extends Tournee {
         if(request.getLastDay() < this.jour)
             return false;
 
-        return technician.isDisponible(request, jour);
+        return technician.isDisponible(request, jour, this);
     }
 
     @Override
