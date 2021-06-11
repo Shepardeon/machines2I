@@ -3,10 +3,7 @@ package solution;
 import instance.Instance;
 import instance.Request;
 import network.Tech;
-import operateur.OperateurInterTournee;
-import operateur.OperateurIntraTournee;
-import operateur.OperateurLocal;
-import operateur.TypeOperateurLocal;
+import operateur.*;
 
 import java.util.*;
 
@@ -320,10 +317,18 @@ public class Solution {
         OperateurIntraTournee meilleur = (OperateurIntraTournee) OperateurLocal.getOperateur(type);
 
         for(int jour = 1; jour <= listeTournees.size(); jour++) {
-            for (Tournee tournee : listeTournees.get(jour)) {
-                OperateurIntraTournee toTest = tournee.getMeilleurOperateurIntra(type);
-                if (toTest.isMeilleur(meilleur))
-                    meilleur = toTest;
+            if(listeTournees.get(jour) != null) {
+                for (Tournee tournee : listeTournees.get(jour)) {
+                    if((tournee instanceof TourneeTruck &&
+                        (meilleur instanceof IntraDeplacementTruck || meilleur instanceof IntraEchangeTruck)
+                        )|| (tournee instanceof TourneeTech &&
+                        (meilleur instanceof IntraEchangeTech || meilleur instanceof IntraDeplacementTech)))
+                    {
+                        OperateurIntraTournee toTest = tournee.getMeilleurOperateurIntra(type);
+                        if (toTest.isMeilleur(meilleur))
+                            meilleur = toTest;
+                    }
+                }
             }
         }
 
@@ -345,6 +350,13 @@ public class Solution {
             for (int i = 0; i < tournees.size(); i++) {
                 for (int j = i; j < tournees.size(); j++) {
                     if (i == j) continue;
+                    /*if(tournees.get(i) instanceof TourneeTruck && meilleur instanceof InterDeplacementTech)*/
+                    if(tournees.get(i) instanceof TourneeTech && meilleur instanceof InterDeplacementTruck)
+                        continue;
+                    if(tournees.get(i) instanceof TourneeTruck && tournees.get(j) instanceof TourneeTech)
+                        continue;
+                    if(tournees.get(i) instanceof TourneeTech && tournees.get(j) instanceof TourneeTruck)
+                        continue;
                     Tournee tournee = tournees.get(i); Tournee autreTournee = tournees.get(j);
                     OperateurInterTournee toTest = tournee.getMeilleurOperateurInter(autreTournee, type);
                     if (toTest.isMeilleur(meilleur))
@@ -389,10 +401,37 @@ public class Solution {
     public boolean doMouvementRechercheLocale(OperateurLocal infos) {
         if (infos == null) return false;
 
-        if (infos.isMouvementRealisable())
-            coutTotal += infos.getDeltaCout();
+        if (infos.isMouvementRealisable()) {
+            if(infos instanceof IntraDeplacementTech || infos instanceof IntraEchangeTech){
+                technicianDistance += infos.getDeltaCout();
+                totaltechCost += infos.getDeltaCout()*techDistanceCost;
+                coutTotal += infos.getDeltaCout()*techDistanceCost;
+            }
+            if(infos instanceof IntraDeplacementTruck || infos instanceof IntraEchangeTruck){
+                truckDistance += infos.getDeltaCout();
+                totaltruckCost += infos.getDeltaCout()*truckDistanceCost;
+                coutTotal += infos.getDeltaCout()*truckDistanceCost;
+            }
+
+            if(infos instanceof InterDeplacementTruck){
+                truckDistance += ((InterDeplacementTruck) infos).getDeltaDistance();
+                totaltruckCost += ((InterDeplacementTruck) infos).getDeltaCoutTournee()+((InterDeplacementTruck) infos).evalDeltaDistanceAutreTournee();
+                if(infos.getTournee().getListRequest().size() == 1 && isJourMaxTruck(infos.getTournee().getJour()))
+                    coutTotal += -truckCost;
+                coutTotal += infos.getDeltaCout();
+            }
+        }
 
         return infos.doMovementIfRealisable();
+    }
+
+    public boolean isJourMaxTruck(int day){
+        int taille = listeTournees.get(day).size();
+        for (int jour = 1; jour <= instance.getDays();jour++) {
+            if(listeTournees.get(jour).size() >= taille && jour != day)
+                return false;
+        }
+        return true;
     }
 
     /**

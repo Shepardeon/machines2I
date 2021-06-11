@@ -5,10 +5,7 @@ import io.Import;
 import io.Export;
 import io.exception.ReaderException;
 import solution.Solution;
-import solveur.Ajout;
-import solveur.InsertionPPV;
-import solveur.Solveur;
-import solveur.Trivial;
+import solveur.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,6 +27,7 @@ public class mainTest {
             Solveur solvA = new Ajout();
             Solveur solvT = new Trivial();
             Solveur solvPPV = new InsertionPPV();
+            Solveur solvRecheLocale = new RechercheLocale();
 
             Solution solu;
 
@@ -41,6 +39,9 @@ public class mainTest {
 
             solu = solvPPV.solve(i);
             System.out.println("PPV " + solu.getCoutTotal());
+
+            solu = solvRecheLocale.solve(i);
+            System.out.println("RechercheLocale " + solu.getCoutTotal());
 
             Export exp = new Export(solu);
             exp.ExporterSolution("solution");

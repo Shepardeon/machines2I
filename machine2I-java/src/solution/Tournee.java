@@ -53,6 +53,10 @@ public abstract class Tournee {
      * METHODES
      */
 
+    public int getJour(){
+        return jour;
+    }
+
     public int getCoutTotal() {
         return coutTotal;
     }
@@ -98,6 +102,8 @@ public abstract class Tournee {
     public abstract boolean canInsererRequest(Request request);
 
     public abstract boolean check();
+
+    public abstract boolean checkAjoutDistance(int delta);
 
     /**
      * Fonction qui vérifie si une position est valide
@@ -214,7 +220,7 @@ public abstract class Tournee {
     }
 
     public int deltaCoutDeplacementTruck(int posI, int posJ){
-        if(isPositionvalide(posI) && isPositionvalide(posJ)){
+        if(doublePositionValide(posI,posJ)){
             return getCurrent(posI).getCoutVers(getCurrent(posJ))
                     +getPrec(posJ).getCoutVers(getCurrent(posI))
                     +getPrec(posI).getCoutVers(getNext(posI))
@@ -241,6 +247,78 @@ public abstract class Tournee {
 
         return true;
     }
+
+    public boolean doEchangeTech(IntraEchangeTech infos){
+        if(infos == null || !infos.isMouvementRealisable()){
+            return false;
+        }
+        int i = infos.getPositionI();
+        int j = infos.getPositionJ();
+        if(!isPositionvalide(i) || !isPositionvalide(j)){
+            return false;
+        }
+        Collections.swap(listRequest, i, j);
+        coutTotal += infos.getDeltaCout();
+        return true;
+    }
+
+
+    public boolean doEchangeTruck(IntraEchangeTruck infos){
+        if(infos == null || !infos.isMouvementRealisable()){
+            return false;
+        }
+        int i = infos.getPositionI();
+        int j = infos.getPositionJ();
+        if(!isPositionvalide(i) || !isPositionvalide(j)){
+            return false;
+        }
+        Collections.swap(listRequest, i, j);
+        coutTotal += infos.getDeltaCout();
+        return true;
+    }
+
+
+    public int deltaCoutEchange(int positionI,int positionJ){
+        if(!isPositionvalide(positionI) || !isPositionvalide(positionJ)){
+            return Integer.MAX_VALUE;
+        }
+        if(positionI == positionJ){
+            return 0;
+        }
+        if(positionJ < positionI){
+            return deltaCoutEchange(positionJ, positionI);
+        }
+        if(positionI+1 == positionJ){
+            return deltaCoutEchangeConsecutif(positionI);
+        }
+        int delta = deltaCoutRemplacement(positionI, listRequest.get(positionJ)) + deltaCoutRemplacement(positionJ, listRequest.get(positionI));
+        if(checkAjoutDistance(delta))
+            return delta;
+        return Integer.MAX_VALUE;
+    }
+
+    public int deltaCoutEchangeConsecutif(int position){
+        Point current = getCurrent(position);
+        Point jPoint = getCurrent(position+1);
+        Point precI = getPrec(position);
+        Point nextJ = getNext(position+1);
+        return precI.getCoutVers(jPoint)+current.getCoutVers(nextJ)-precI.getCoutVers(current)-jPoint.getCoutVers(nextJ);
+    }
+
+    public int deltaCoutRemplacement(int position,Request request){
+        Point current = getCurrent(position);
+        Point prec = getPrec(position);
+        Point next = getNext(position);
+        return prec.getCoutVers(request.getClient())+request.getClient().getCoutVers(next)-prec.getCoutVers(current)-current.getCoutVers(next);
+    }
+
+    public int deltaCoutSuppression(int position){
+        Point current = getCurrent(position);
+        Point prec = getPrec(position);
+        Point next = getNext(position);
+        return prec.getCoutVers(next)-prec.getCoutVers(current)-current.getCoutVers(next);
+    }
+
 
     /**
      * Fonction qui renvoie le meilleur opérateur intra tournée
@@ -282,10 +360,93 @@ public abstract class Tournee {
         return meilleur;
     }
 
+    public int getCoutTruckDistance(){
+        return instance.getTruckDistanceCost();
+    }
+
+    public int deltaCoutInsertionInterTruck(int position, Request request){
+        if(this instanceof TourneeTruck) {
+            TourneeTruck tourneeTruck = (TourneeTruck) this;
+
+            if(jour < request.getFirstDay() || jour > request.getLastDay()-1)
+                return Integer.MAX_VALUE;
+            if(jour >= request.getJourInstallation())
+                return Integer.MAX_VALUE;
+
+            int tailleMachine = instance.getMapMachines().get(request.getIdMachine()).getSize();
+            if(tourneeTruck.getCapacity()+request.getNbMachine()*tailleMachine > tourneeTruck.getMaxCapacity())
+                return Integer.MAX_VALUE;
+            int cout = deltaCoutInsertion(position,request);
+
+            if(tourneeTruck.getDistance()+cout > tourneeTruck.getMaxDistance())
+                return Integer.MAX_VALUE;
+            return cout;
+        }else
+            return Integer.MAX_VALUE;
+    }
+
+    public int deltaCoutInsertion(int position,Request request){
+        if(!isPositionInsertionValide(position)){
+            return Integer.MAX_VALUE;
+        }
+        Point client = request.getClient();
+        if(listRequest.isEmpty()){
+            return 2 * client.getCoutVers(depot);
+        }
+        Point prec = getPrec(position);
+        Point pos = getCurrent(position);
+        return prec.getCoutVers(client)+client.getCoutVers(pos)-prec.getCoutVers(pos);
+    }
+
+    public boolean doDeplacementTruck(InterDeplacementTruck infos){
+        if(infos == null){
+            return false;
+        }
+        if(infos.isMouvementRealisable()){
+            Request i = infos.getRequestI();
+            Tournee t2 = infos.getAutreTournee();
+            int posi = infos.getPositionI();
+            int posj = infos.getPositionJ();
+            listRequest.remove(posi);
+            t2.listRequest.add(posj, i);
+            t2.coutTotal += infos.getDeltaCoutAutreTournee();
+            coutTotal += infos.getDeltaCoutTournee();
+
+            ((TourneeTruck) t2).addDistance(infos.evalDeltaDistanceAutreTournee());
+            ((TourneeTruck) this).addDistance(infos.evalDeltaDistanceTournee());
+
+            int capacity = i.getNbMachine()*instance.getMapMachines().get(i.getIdMachine()).getSize();
+            ((TourneeTruck) this).addCapacity(-i.getNbMachine()*instance.getMapMachines().get(i.getIdMachine()).getSize());
+            ((TourneeTruck) t2).addCapacity(capacity);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     @Override
     public String toString() {
         return "Tournee{" +
                 ", coutTotal=" + coutTotal +
                 '}';
+    }
+
+    public int getCoutSuppDeplacementTruck(InterDeplacementTruck infos){
+        int cout = 0;
+        int i = infos.getPositionI();
+        int j = infos.getPositionJ();
+        TourneeTruck t1 = (TourneeTruck) infos.getTournee();
+        TourneeTruck t2 = (TourneeTruck) infos.getAutreTournee();
+        if(t1.jour != t2.jour){
+            if(t2.jour >= t1.listRequest.get(i).getJourInstallation()){
+                return Integer.MAX_VALUE;
+            }else{
+                cout += (t1.jour - t2.jour)*instance.getMapMachines().get(t1.listRequest.get(i).getIdMachine()).getPenalityCost();
+            }
+        }
+        if(t1.listRequest.size() == 1){
+            cout += -instance.getTruckDayCost();
+        }
+        return cout;
     }
 }

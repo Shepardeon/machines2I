@@ -48,10 +48,13 @@ public abstract class OperateurLocal extends Operateur {
 
     public static OperateurLocal getOperateur(TypeOperateurLocal type) {
         return switch (type) {
-            /*case INTER_ECHANGE -> new InterEchange();
-            case INTRA_ECHANGE -> new IntraEchange();
-            case INTER_DEPLACEMENT -> new InterDeplacement();
-            case INTRA_DEPLACEMENT -> new IntraDeplacement();*/
+            /*
+            case INTER_ECHANGE -> new InterEchange();*/
+            case INTER_DEPLACEMENT_TRUCK -> new InterDeplacementTruck();
+            case INTRA_DEPLACEMENT_TECH -> new IntraDeplacementTech();
+            case INTRA_DEPLACEMENT_TRUCK -> new IntraDeplacementTech();
+            case INTRA_ECHANGE_TECH -> new IntraEchangeTech();
+            case INTRA_ECHANGE_TRUCK -> new IntraEchangeTruck();
             default -> null;
         };
     }
@@ -59,8 +62,10 @@ public abstract class OperateurLocal extends Operateur {
     public static OperateurLocal getOperateurIntra(TypeOperateurLocal type, Tournee tournee,
                                                    int positionI, int positionJ) {
         return switch (type) {
-            /*case INTRA_DEPLACEMENT -> new IntraDeplacement(tournee, positionI, positionJ);
-            case INTRA_ECHANGE -> new IntraEchange(tournee, positionI, positionJ);*/
+            case INTRA_DEPLACEMENT_TECH -> new IntraDeplacementTech(tournee, positionI, positionJ);
+            case INTRA_DEPLACEMENT_TRUCK -> new IntraDeplacementTruck(tournee, positionI, positionJ);
+            case INTRA_ECHANGE_TECH -> new IntraEchangeTech(tournee, positionI, positionJ);
+            case INTRA_ECHANGE_TRUCK -> new IntraEchangeTruck(tournee, positionI, positionJ);
             default -> null;
         };
     }
@@ -68,8 +73,8 @@ public abstract class OperateurLocal extends Operateur {
     public static OperateurLocal getOperateurInter(TypeOperateurLocal type, Tournee tournee, Tournee autreTournee,
                                                    int positionI, int positionJ) {
         return switch (type) {
-            /*case INTER_DEPLACEMENT -> new InterDeplacement(tournee, autreTournee, positionI, positionJ);
-            case INTER_ECHANGE -> new InterEchange(tournee, autreTournee, positionI, positionJ);*/
+            case INTER_DEPLACEMENT_TRUCK -> new InterDeplacementTruck(tournee, autreTournee, positionI, positionJ);
+            /*case INTER_ECHANGE_TECH -> new InterEchange(tournee, autreTournee, positionI, positionJ);*/
             default -> null;
         };
     }

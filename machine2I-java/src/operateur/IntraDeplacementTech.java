@@ -30,7 +30,7 @@ public class IntraDeplacementTech extends OperateurIntraTournee {
 
     @Override
     public String toString() {
-        return "IntraDeplacement{" +
+        return "IntraDeplacementTech{" +
                 "tournee=" + tournee +
                 ", deltaCout=" + deltaCout +
                 ", positionI=" + positionI +

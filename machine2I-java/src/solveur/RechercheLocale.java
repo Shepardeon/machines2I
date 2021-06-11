@@ -2,6 +2,7 @@ package solveur;
 
 import instance.Instance;
 import instance.Request;
+import operateur.IntraEchangeTruck;
 import operateur.OperateurLocal;
 import operateur.TypeOperateurLocal;
 import solution.Solution;
