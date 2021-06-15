@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 public class mainTest {
     public static void main(String[] args) {
         try {
-            Import reader = new Import("instances/ORTEC-late/VSC2019_ORTEC_Late_08.txt");
+            Import reader = new Import("instances/ORTEC-early-easy/VSC2019_ORTEC_early_01_easy.txt");
             Instance i = reader.readInstance();
             System.out.println("Instance lue avec success !");
             System.out.println("Num request = " + i.getRequests().size());
@@ -45,7 +45,6 @@ public class mainTest {
 
             Export exp = new Export(solu);
             exp.ExporterSolution("solution");
-
 
         } catch (
         ReaderException ex) {

@@ -319,15 +319,21 @@ public class Solution {
         for(int jour = 1; jour <= listeTournees.size(); jour++) {
             if(listeTournees.get(jour) != null) {
                 for (Tournee tournee : listeTournees.get(jour)) {
-                    if((tournee instanceof TourneeTruck &&
-                        (meilleur instanceof IntraDeplacementTruck || meilleur instanceof IntraEchangeTruck)
-                        )|| (tournee instanceof TourneeTech &&
-                        (meilleur instanceof IntraEchangeTech || meilleur instanceof IntraDeplacementTech)))
-                    {
-                        OperateurIntraTournee toTest = tournee.getMeilleurOperateurIntra(type);
-                        if (toTest.isMeilleur(meilleur))
-                            meilleur = toTest;
-                    }
+                    if(tournee instanceof TourneeTruck && meilleur instanceof IntraEchangeTech)
+                        continue;
+
+                    if(tournee instanceof TourneeTruck && meilleur instanceof IntraDeplacementTech)
+                        continue;
+
+                    if(tournee instanceof TourneeTech && meilleur instanceof IntraEchangeTruck)
+                        continue;
+
+                    if(tournee instanceof TourneeTech && meilleur instanceof IntraDeplacementTruck)
+                        continue;
+
+                    OperateurIntraTournee toTest = tournee.getMeilleurOperateurIntra(type);
+                    if (toTest.isMeilleur(meilleur))
+                        meilleur = toTest;
                 }
             }
         }
@@ -350,7 +356,8 @@ public class Solution {
             for (int i = 0; i < tournees.size(); i++) {
                 for (int j = i; j < tournees.size(); j++) {
                     if (i == j) continue;
-                    /*if(tournees.get(i) instanceof TourneeTruck && meilleur instanceof InterDeplacementTech)*/
+                    if(tournees.get(i) instanceof TourneeTruck && meilleur instanceof InterDeplacementTech)
+                        continue;
                     if(tournees.get(i) instanceof TourneeTech && meilleur instanceof InterDeplacementTruck)
                         continue;
                     if(tournees.get(i) instanceof TourneeTruck && tournees.get(j) instanceof TourneeTech)
@@ -389,7 +396,6 @@ public class Solution {
                 }
             }
         }
-
         return meilleur;
     }
 
@@ -415,6 +421,7 @@ public class Solution {
 
             if(infos instanceof InterDeplacementTruck){
                 truckDistance += ((InterDeplacementTruck) infos).getDeltaDistance();
+                System.out.println("Amélioration de truck de"+((InterDeplacementTruck) infos).getDeltaDistance()+" vers "+truckDistance);
                 totaltruckCost += ((InterDeplacementTruck) infos).getDeltaCoutTournee()+((InterDeplacementTruck) infos).evalDeltaDistanceAutreTournee();
                 int temp = ((InterDeplacementTruck) infos).getDeltaIDLE();
                 if(infos.getTournee().getListRequest().size() == 1) {
@@ -423,6 +430,23 @@ public class Solution {
                     if(isJourMaxTruck(infos.getTournee().getJour())) {
                         coutTotal += -truckCost;
                         numberTrucksUsed --;
+                    }
+                }
+                machineCost += temp;
+                coutTotal += infos.getDeltaCout();
+            }
+
+            if(infos instanceof InterDeplacementTech){
+                technicianDistance += ((InterDeplacementTech) infos).getDeltaDistance();
+                System.out.println("Amélioration de tech de"+((InterDeplacementTech) infos).getDeltaDistance()+" vers "+technicianDistance);
+                totaltechCost += ((InterDeplacementTech) infos).getDeltaCoutTournee()+((InterDeplacementTech) infos).evalDeltaDistanceAutreTournee();
+                int temp = ((InterDeplacementTech) infos).getDeltaIDLE();
+                if(infos.getTournee().getListRequest().size() == 1) {
+                    numberTechnicianDays --;
+                    temp += +techDayCost;
+                    if(!((TourneeTech)infos.getTournee()).getTechnician().isUsedAnotherDay(infos.getTournee().getJour())) {
+                        temp += +techCost;
+                        numberTechniciansUsed --;
                     }
                 }
                 machineCost += temp;
