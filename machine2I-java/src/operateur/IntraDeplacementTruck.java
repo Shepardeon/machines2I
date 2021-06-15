@@ -37,7 +37,7 @@ public class IntraDeplacementTruck extends OperateurIntraTournee {
 
     @Override
     public String toString() {
-        return "IntraDeplacement{" +
+        return "IntraDeplacementTruck{" +
                 "tournee=" + tournee +
                 ", deltaCout=" + deltaCout +
                 ", positionI=" + positionI +

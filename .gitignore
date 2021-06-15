@@ -27,3 +27,6 @@ hs_err_pid*
 /bin/
 .classpath
 .project
+machines2I.iml
+
+checker/__pycache__/

@@ -11,6 +11,7 @@ public class Request {
     private int idMachine;
     private int nbMachine;
     private int jourLivraison;
+    private int jourInstallation;
 
     public Request(int id, Client client, int firstDay, int lastDay, int idMachine, int nbMachine) {
         this.id = id;
@@ -20,6 +21,7 @@ public class Request {
         this.idMachine = idMachine;
         this.nbMachine = nbMachine;
         this.jourLivraison = Integer.MAX_VALUE;
+        this.jourInstallation = Integer.MAX_VALUE;
     }
 
     public int getNbMachine(){
@@ -40,6 +42,10 @@ public class Request {
         return jourLivraison;
     }
 
+    public int getJourInstallation() {
+        return jourInstallation;
+    }
+
     public int getFirstDay() {
         return firstDay;
     }
@@ -50,6 +56,10 @@ public class Request {
 
     public void setJourLivraison(int jourLivraison) {
         this.jourLivraison = jourLivraison;
+    }
+
+    public void setJourInstallation(int jourInstallation) {
+        this.jourInstallation = jourInstallation;
     }
 
     @Override

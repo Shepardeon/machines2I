@@ -7,7 +7,7 @@ public abstract class OperateurInterTournee extends OperateurLocal {
      * PARAMETRES
      */
     protected Tournee autreTournee;
-    protected int deltaCoutTournee, deltaCoutAutreTournee, deltaIDLE;
+    protected int deltaCoutTournee, deltaCoutAutreTournee, deltaIDLE, deltaDistanceTournee, deltaDistanceAutreTournee;
 
     /*
      * CONSTRUCTEURS
@@ -40,6 +40,10 @@ public abstract class OperateurInterTournee extends OperateurLocal {
         return deltaCoutAutreTournee;
     }
 
+    public int getDeltaDistance(){ return deltaDistanceTournee+deltaDistanceAutreTournee;}
+
+    public int getDeltaIDLE(){ return deltaIDLE;}
+
     /**
      * Calcul le surcout lié à l'application de l'opérateur sur la tournée
      * @return le surcout
@@ -53,6 +57,11 @@ public abstract class OperateurInterTournee extends OperateurLocal {
     protected abstract int evalDeltaCoutAutreTournee();
 
 
+    public abstract int evalDeltaDistanceTournee();
+
+    public abstract int evalDeltaDistanceAutreTournee();
+
+
     /**
      * Calcul le surcout lié à l'application de l'opérateur sur l'autre tournée
      * @return le surcout
@@ -64,10 +73,17 @@ public abstract class OperateurInterTournee extends OperateurLocal {
         if (tournee == null || autreTournee == null)
             return Integer.MAX_VALUE;
 
+        deltaDistanceTournee = evalDeltaDistanceTournee();
+        deltaDistanceAutreTournee = evalDeltaDistanceAutreTournee();
+        if(deltaDistanceTournee == Integer.MAX_VALUE || deltaDistanceAutreTournee == Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
         deltaCoutTournee = evalDeltaCoutTournee();
+        //System.out.println("Tournee = "+deltaCoutTournee);
         deltaCoutAutreTournee = evalDeltaCoutAutreTournee();
+        //System.out.println("Autre Tournee = "+deltaCoutAutreTournee);
 
         deltaIDLE = evalDeltaIDLE();
+        //System.out.println("Tournee = "+deltaIDLE);
 
         if (deltaCoutTournee == Integer.MAX_VALUE || deltaCoutAutreTournee == Integer.MAX_VALUE)
             return Integer.MAX_VALUE;

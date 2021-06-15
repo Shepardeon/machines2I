@@ -33,6 +33,7 @@ public class TourneeTech extends Tournee {
         if(canInsererRequest(request)){
 
             coutTotal += this.calculCoutAjoutRequest(request);
+            request.setJourInstallation(jour);
             technician.ajouterRequest(request, jour, this);
             //System.out.println(coutTotal); // TODO : OOF
             this.listRequest.add(request);
@@ -55,6 +56,11 @@ public class TourneeTech extends Tournee {
     @Override
     public boolean check() {
         return false;
+    }
+
+    @Override
+    public boolean checkAjoutDistance(int delta) {
+        return distance + delta <= getTechnician().getMaxDistance();
     }
 }
 

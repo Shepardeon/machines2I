@@ -79,7 +79,7 @@ public class TourneeTruck extends Tournee {
         if (capacity + (mapMachines.get(request.getIdMachine()).getSize() * request.getNbMachine()) > maxCapacity)
             return false;
 
-        if (distance + calculCoutAjoutRequest(request) > maxDistance){
+        if (!checkAjoutDistance(calculCoutAjoutRequest(request))){
             return false;
         }
         return true;
@@ -88,5 +88,18 @@ public class TourneeTruck extends Tournee {
     @Override
     public boolean check() {
         return false;
+    }
+
+    @Override
+    public boolean checkAjoutDistance(int delta) {
+        return distance + delta <= maxDistance;
+    }
+
+    public void addCapacity(int ajout){
+        this.capacity += ajout;
+    }
+
+    public void addDistance(int ajout){
+        this.distance += ajout;
     }
 }
