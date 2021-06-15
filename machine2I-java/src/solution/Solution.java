@@ -416,8 +416,16 @@ public class Solution {
             if(infos instanceof InterDeplacementTruck){
                 truckDistance += ((InterDeplacementTruck) infos).getDeltaDistance();
                 totaltruckCost += ((InterDeplacementTruck) infos).getDeltaCoutTournee()+((InterDeplacementTruck) infos).evalDeltaDistanceAutreTournee();
-                if(infos.getTournee().getListRequest().size() == 1 && isJourMaxTruck(infos.getTournee().getJour()))
-                    coutTotal += -truckCost;
+                int temp = ((InterDeplacementTruck) infos).getDeltaIDLE();
+                if(infos.getTournee().getListRequest().size() == 1) {
+                    numberTruckDays --;
+                    temp += +truckDayCost;
+                    if(isJourMaxTruck(infos.getTournee().getJour())) {
+                        coutTotal += -truckCost;
+                        numberTrucksUsed --;
+                    }
+                }
+                machineCost += temp;
                 coutTotal += infos.getDeltaCout();
             }
         }
@@ -426,10 +434,22 @@ public class Solution {
     }
 
     public boolean isJourMaxTruck(int day){
-        int taille = listeTournees.get(day).size();
+        int taille = 0;
+        for (int j = 0; j < listeTournees.get(day).size() ; j++){
+            if(listeTournees.get(day).get(j) instanceof TourneeTruck && !listeTournees.get(day).get(j).isEmpty()){
+                taille ++;
+            }
+        }
         for (int jour = 1; jour <= instance.getDays();jour++) {
-            if(listeTournees.get(jour).size() >= taille && jour != day)
-                return false;
+            if(listeTournees.get(jour) != null && jour != day) {
+                int compare = 0;
+                for (int i = 0; i < listeTournees.get(jour).size(); i++) {
+                    if(listeTournees.get(jour).get(i) instanceof TourneeTruck && !listeTournees.get(jour).get(i).isEmpty())
+                        compare++;
+                }
+                if(compare >= taille)
+                    return false;
+            }
         }
         return true;
     }

@@ -15,12 +15,12 @@ public class InterDeplacementTruck extends OperateurInterTournee{
 
     @Override
     protected int evalDeltaCoutTournee() {
-        return evalDeltaDistanceTournee()*tournee.getCoutTruckDistance();
+        return deltaDistanceTournee*tournee.getCoutTruckDistance();
     }
 
     @Override
     protected int evalDeltaCoutAutreTournee() {
-        return evalDeltaDistanceAutreTournee()*autreTournee.getCoutTruckDistance();
+        return deltaDistanceAutreTournee*autreTournee.getCoutTruckDistance();
     }
 
     @Override
@@ -38,10 +38,10 @@ public class InterDeplacementTruck extends OperateurInterTournee{
         return tournee.getCoutSuppDeplacementTruck(this);
     }
 
-    @Override
+    /*@Override
     protected int evalDeltaCoutDistance() {
         return tournee.deltaCoutSuppression(positionI)+autreTournee.deltaCoutInsertionInterTruck(positionJ,requestI);
-    }
+    }*/
 
 
     @Override

@@ -7,7 +7,7 @@ public abstract class OperateurInterTournee extends OperateurLocal {
      * PARAMETRES
      */
     protected Tournee autreTournee;
-    protected int deltaCoutTournee, deltaCoutAutreTournee, deltaIDLE, deltaDistance;
+    protected int deltaCoutTournee, deltaCoutAutreTournee, deltaIDLE, deltaDistanceTournee, deltaDistanceAutreTournee;
 
     /*
      * CONSTRUCTEURS
@@ -40,7 +40,9 @@ public abstract class OperateurInterTournee extends OperateurLocal {
         return deltaCoutAutreTournee;
     }
 
-    public int getDeltaDistance(){ return deltaDistance;}
+    public int getDeltaDistance(){ return deltaDistanceTournee+deltaDistanceAutreTournee;}
+
+    public int getDeltaIDLE(){ return deltaIDLE;}
 
     /**
      * Calcul le surcout lié à l'application de l'opérateur sur la tournée
@@ -66,19 +68,22 @@ public abstract class OperateurInterTournee extends OperateurLocal {
      */
     protected abstract int evalDeltaIDLE();
 
-
-    protected abstract int evalDeltaCoutDistance();
-
     @Override
     protected int evalDeltaCout() {
         if (tournee == null || autreTournee == null)
             return Integer.MAX_VALUE;
 
-        deltaDistance = evalDeltaCoutDistance();
+        deltaDistanceTournee = evalDeltaDistanceTournee();
+        deltaDistanceAutreTournee = evalDeltaDistanceAutreTournee();
+        if(deltaDistanceTournee == Integer.MAX_VALUE || deltaDistanceAutreTournee == Integer.MAX_VALUE)
+            return Integer.MAX_VALUE;
         deltaCoutTournee = evalDeltaCoutTournee();
+        //System.out.println("Tournee = "+deltaCoutTournee);
         deltaCoutAutreTournee = evalDeltaCoutAutreTournee();
+        //System.out.println("Autre Tournee = "+deltaCoutAutreTournee);
 
         deltaIDLE = evalDeltaIDLE();
+        //System.out.println("Tournee = "+deltaIDLE);
 
         if (deltaCoutTournee == Integer.MAX_VALUE || deltaCoutAutreTournee == Integer.MAX_VALUE)
             return Integer.MAX_VALUE;

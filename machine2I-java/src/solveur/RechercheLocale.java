@@ -26,12 +26,11 @@ public class RechercheLocale implements Solveur{
                 OperateurLocal best = solu.getMeilleurOperateurLocal(type);
                 if(best != null && best.isMouvementRealisable() && best.isMouvementAmeliorant()){
                     improve = true;
+                    //System.out.println("Trop b1 : "+best);
                     solu.doMouvementRechercheLocale(best);
                 }
             }
-
         }
-        //TODO
 
         return solu;
     }

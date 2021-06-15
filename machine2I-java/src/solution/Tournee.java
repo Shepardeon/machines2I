@@ -313,10 +313,13 @@ public abstract class Tournee {
     }
 
     public int deltaCoutSuppression(int position){
-        Point current = getCurrent(position);
-        Point prec = getPrec(position);
-        Point next = getNext(position);
-        return prec.getCoutVers(next)-prec.getCoutVers(current)-current.getCoutVers(next);
+        if(isPositionvalide(position)) {
+            Point current = getCurrent(position);
+            Point prec = getPrec(position);
+            Point next = getNext(position);
+            return prec.getCoutVers(next) - prec.getCoutVers(current) - current.getCoutVers(next);
+        }
+        return Integer.MAX_VALUE;
     }
 
 
@@ -407,8 +410,6 @@ public abstract class Tournee {
             Tournee t2 = infos.getAutreTournee();
             int posi = infos.getPositionI();
             int posj = infos.getPositionJ();
-            listRequest.remove(posi);
-            t2.listRequest.add(posj, i);
             t2.coutTotal += infos.getDeltaCoutAutreTournee();
             coutTotal += infos.getDeltaCoutTournee();
 
@@ -418,6 +419,8 @@ public abstract class Tournee {
             int capacity = i.getNbMachine()*instance.getMapMachines().get(i.getIdMachine()).getSize();
             ((TourneeTruck) this).addCapacity(-i.getNbMachine()*instance.getMapMachines().get(i.getIdMachine()).getSize());
             ((TourneeTruck) t2).addCapacity(capacity);
+            listRequest.remove(posi);
+            t2.listRequest.add(posj, i);
             return true;
         }else{
             return false;

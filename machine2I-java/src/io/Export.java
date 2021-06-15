@@ -26,7 +26,7 @@ public class Export {
 		File monFichier = new File("solutions/" + instanceName + ".txt");
 		try{
 			if(monFichier.createNewFile())
-				System.out.println("création du fichier solution.txt");
+				System.out.println("crï¿½ation du fichier solution.txt");
 			else
 				System.out.println("modification du fichier solution.txt");
 			PrintWriter writer = new PrintWriter(monFichier);
@@ -53,15 +53,17 @@ public class Export {
 				int nbTech = 0;
 				if(tournees != null) {
 					for (Tournee t : tournees) {
-						if (t instanceof TourneeTech) {
-							tech.add(t);
-							if(!technician.contains(((TourneeTech) t).getTechnician().getIdTechnician())){
-								technician.add(((TourneeTech) t).getTechnician().getIdTechnician());
-								nbTech++;
+						if(!t.isEmpty()) {
+							if (t instanceof TourneeTech) {
+								tech.add(t);
+								if (!technician.contains(((TourneeTech) t).getTechnician().getIdTechnician())) {
+									technician.add(((TourneeTech) t).getTechnician().getIdTechnician());
+									nbTech++;
+								}
+							} else {
+								truck.add(t);
+								nbTruck++;
 							}
-						} else {
-							truck.add(t);
-							nbTruck++;
 						}
 					}
 				}
