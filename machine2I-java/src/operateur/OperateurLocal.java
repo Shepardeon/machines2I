@@ -51,8 +51,9 @@ public abstract class OperateurLocal extends Operateur {
             /*
             case INTER_ECHANGE -> new InterEchange();*/
             case INTER_DEPLACEMENT_TRUCK -> new InterDeplacementTruck();
+            case INTER_DEPLACEMENT_TECH -> new InterDeplacementTech();
             case INTRA_DEPLACEMENT_TECH -> new IntraDeplacementTech();
-            case INTRA_DEPLACEMENT_TRUCK -> new IntraDeplacementTech();
+            case INTRA_DEPLACEMENT_TRUCK -> new IntraDeplacementTruck();
             case INTRA_ECHANGE_TECH -> new IntraEchangeTech();
             case INTRA_ECHANGE_TRUCK -> new IntraEchangeTruck();
             default -> null;
@@ -74,6 +75,7 @@ public abstract class OperateurLocal extends Operateur {
                                                    int positionI, int positionJ) {
         return switch (type) {
             case INTER_DEPLACEMENT_TRUCK -> new InterDeplacementTruck(tournee, autreTournee, positionI, positionJ);
+            case INTER_DEPLACEMENT_TECH -> new InterDeplacementTech(tournee, autreTournee, positionI, positionJ);
             /*case INTER_ECHANGE_TECH -> new InterEchange(tournee, autreTournee, positionI, positionJ);*/
             default -> null;
         };

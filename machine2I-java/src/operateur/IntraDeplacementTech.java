@@ -31,12 +31,12 @@ public class IntraDeplacementTech extends OperateurIntraTournee {
     @Override
     public String toString() {
         return "IntraDeplacementTech{" +
-                "tournee=" + tournee +
-                ", deltaCout=" + deltaCout +
+                /*"tournee=" + tournee +*/
+                "deltaCout=" + deltaCout +
                 ", positionI=" + positionI +
                 ", positionJ=" + positionJ +
-                ", clientI=" + requestI +
-                ", clientJ=" + requestJ +
+                ", clientI=" + requestI.getClient().getId() +
+                ", clientJ=" + requestJ.getClient().getId() +
                 '}';
     }
 }

@@ -2,25 +2,24 @@ package operateur;
 
 import solution.Tournee;
 
-public class InterDeplacementTruck extends OperateurInterTournee{
+public class InterDeplacementTech extends OperateurInterTournee{
 
-    public InterDeplacementTruck() {
+    public InterDeplacementTech() {
         super();
     }
 
-
-    public InterDeplacementTruck(Tournee t, Tournee t2, int pos1, int pos2){
+    public InterDeplacementTech(Tournee t, Tournee t2, int pos1, int pos2){
         super(t,t2,pos1,pos2);
     }
 
     @Override
     protected int evalDeltaCoutTournee() {
-        return deltaDistanceTournee*tournee.getCoutTruckDistance();
+        return deltaDistanceTournee*tournee.getCoutTechDistance();
     }
 
     @Override
     protected int evalDeltaCoutAutreTournee() {
-        return deltaDistanceAutreTournee*autreTournee.getCoutTruckDistance();
+        return deltaDistanceAutreTournee*autreTournee.getCoutTechDistance();
     }
 
     @Override
@@ -30,12 +29,12 @@ public class InterDeplacementTruck extends OperateurInterTournee{
 
     @Override
     public int evalDeltaDistanceAutreTournee() {
-        return autreTournee.deltaCoutInsertionInterTruck(positionJ,requestI);
+        return autreTournee.deltaCoutInsertionInterTech(positionJ,requestI);
     }
 
     @Override
     protected int evalDeltaIDLE() {
-        return tournee.getCoutSuppDeplacementTruck(this);
+        return tournee.getCoutSuppDeplacementTech(this);
     }
 
     /*@Override
@@ -47,15 +46,15 @@ public class InterDeplacementTruck extends OperateurInterTournee{
     @Override
     protected boolean doMovement() {
         if(this.isMouvementRealisable())
-            return tournee.doDeplacementTruck(this);
+            return tournee.doDeplacementTech(this);
         else
             return false;
     }
 
     @Override
     public String toString() {
-        return "InterDeplacementTruck[ "+/*Tournee1 = "+tournee+", Tournee2 = "+tournee2+", "+*/" Client1 = "+requestI.getClient().getId()+
+        return "InterDeplacementTech[ "+/*Tournee1 = "+tournee+", Tournee2 = "+tournee2+", "+*/" Client1 = "+requestI.getClient().getId()+
                 ", position1 = "+positionI+", Client2 = "+requestJ.getClient().getId()+
-                ", position2 = "+positionJ+", cout = "+deltaCout+ ", distance = "+getDeltaDistance()+"]";
+                ", position2 = "+positionJ+", cout = "+deltaCout+", distance = "+getDeltaDistance()+"]";
     }
 }

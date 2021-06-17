@@ -38,12 +38,12 @@ public class IntraDeplacementTruck extends OperateurIntraTournee {
     @Override
     public String toString() {
         return "IntraDeplacementTruck{" +
-                "tournee=" + tournee +
-                ", deltaCout=" + deltaCout +
+                /*"tournee=" + tournee +*/
+                "deltaCout=" + deltaCout +
                 ", positionI=" + positionI +
                 ", positionJ=" + positionJ +
-                ", requestI=" + requestI +
-                ", requestJ=" + requestJ +
+                ", requestI=" + requestI.getClient().getId() +
+                ", requestJ=" + requestJ.getClient().getId() +
                 '}';
     }
 }
