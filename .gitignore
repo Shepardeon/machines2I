@@ -30,3 +30,5 @@ hs_err_pid*
 machines2I.iml
 
 checker/__pycache__/
+
+!lib/*.jar
