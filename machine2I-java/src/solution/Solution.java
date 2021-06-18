@@ -178,6 +178,7 @@ public class Solution {
 
         if(!t.ajouterRequest(r)) return false;
 
+
         if (listeTournees.get(jour) == null)
             listeTournees.put(jour, new LinkedList<>());
 
@@ -272,7 +273,15 @@ public class Solution {
         if (tournees == null || tournees.isEmpty()) return false;
 
         // Normalement aucun problème une fois de plus
-        TourneeTech t = (TourneeTech) tournees.getLast();
+        TourneeTech t = null;
+        for (Tournee tournee : tournees) {
+            if(tournee instanceof TourneeTech){
+                t = (TourneeTech) tournee;
+            }
+        }
+
+        if(t == null)
+            return false;
 
         if (techPlusProche == t.getTechnician())
             return ajouterClientTourneeTech(r, t);
@@ -306,6 +315,24 @@ public class Solution {
         coutTotal += cout;
 
         return true;
+    }
+
+    public boolean retirerRequestTourneeTech(int position, TourneeTech tourneeTech){
+        Request request = tourneeTech.getRequestAt(position);
+
+        int distance = tourneeTech.deltaCoutSuppression(position);
+        technicianDistance += distance;
+        totaltechCost += distance*techDistanceCost;
+        coutTotal += distance*techDistanceCost;
+        int delais = request.getJourInstallation()-request.getJourLivraison();
+        if(delais != 1){
+            int idleCost = -delais*instance.getMapMachines().get(request.getIdMachine()).getPenalityCost();
+            machineCost += idleCost;
+            coutTotal += idleCost;
+        }
+        request.setJourInstallation(Integer.MAX_VALUE);
+        tourneeTech.getTechnician().retirerRequest(distance,tourneeTech.getJour());
+        return tourneeTech.retirerRequete(position);
     }
 
     /**
@@ -421,7 +448,6 @@ public class Solution {
 
             if(infos instanceof InterDeplacementTruck){
                 truckDistance += ((InterDeplacementTruck) infos).getDeltaDistance();
-                System.out.println("Amélioration de truck de"+((InterDeplacementTruck) infos).getDeltaDistance()+" vers "+truckDistance);
                 totaltruckCost += ((InterDeplacementTruck) infos).getDeltaCoutTournee()+((InterDeplacementTruck) infos).evalDeltaDistanceAutreTournee();
                 int temp = ((InterDeplacementTruck) infos).getDeltaIDLE();
                 if(infos.getTournee().getListRequest().size() == 1) {
@@ -438,7 +464,6 @@ public class Solution {
 
             if(infos instanceof InterDeplacementTech){
                 technicianDistance += ((InterDeplacementTech) infos).getDeltaDistance();
-                System.out.println("Amélioration de tech de"+((InterDeplacementTech) infos).getDeltaDistance()+" vers "+technicianDistance);
                 totaltechCost += ((InterDeplacementTech) infos).getDeltaCoutTournee()+((InterDeplacementTech) infos).evalDeltaDistanceAutreTournee();
                 int temp = ((InterDeplacementTech) infos).getDeltaIDLE();
                 if(infos.getTournee().getListRequest().size() == 1) {

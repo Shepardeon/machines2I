@@ -122,6 +122,9 @@ public class Tech {
                 return false;
         }
 
+        boolean demande = disponibilite.get(jour).demande + 1 <= maxDemande;
+        int distance = (disponibilite.get(jour).distance );
+
         return disponibilite.get(jour).demande + 1 <= maxDemande &&
                 (disponibilite.get(jour).distance +
                 disponibilite.get(jour).position.getCoutVers(request.getClient())+
@@ -155,17 +158,17 @@ public class Tech {
         return false;
     }
 
-    public void retirerRequest(int distance, int demande, int jour){
-        disponibilite.get(jour).ajouterDemande(-demande);
-        disponibilite.get(jour).ajouterDistance(-distance);
+    public void retirerRequest(int distance, int jour){
+        disponibilite.get(jour).ajouterDemande(-1);
+        disponibilite.get(jour).ajouterDistance(distance);
         if(disponibilite.get(jour).distance == 0) {
             disponibilite.get(jour).fatigue = 0;
             disponibilite.get(jour).tournee = null;
         }
     }
 
-    public void insererRequest(int distance, int demande, int jour){
-        disponibilite.get(jour).ajouterDemande(demande);
+    public void insererRequest(int distance, int jour){
+        disponibilite.get(jour).ajouterDemande(1);
         disponibilite.get(jour).ajouterDistance(distance);
     }
 

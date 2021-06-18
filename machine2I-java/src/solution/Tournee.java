@@ -467,8 +467,8 @@ public abstract class Tournee {
             t2.coutTotal += infos.getDeltaCoutAutreTournee();
             coutTotal += infos.getDeltaCoutTournee();
 
-            ((TourneeTech) t2).getTechnician().insererRequest(infos.getDeltaCoutAutreTournee(),i.getNbMachine(),jour);
-            ((TourneeTech) this).getTechnician().retirerRequest(infos.getDeltaCoutTournee(),i.getNbMachine(),jour);
+            ((TourneeTech) t2).getTechnician().insererRequest(infos.getDeltaCoutAutreTournee(),jour);
+            ((TourneeTech) this).getTechnician().retirerRequest(infos.getDeltaCoutTournee(),jour);
 
             listRequest.remove(posi);
             t2.listRequest.add(posj, i);
