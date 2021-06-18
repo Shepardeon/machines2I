@@ -6,20 +6,15 @@
 package vue;
 
 import instance.Instance;
-import instance.Request;
-import java.util.LinkedList;
-import java.util.Map;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 import solution.Solution;
 import solution.Tournee;
 import solution.TourneeTech;
-import solveur.Ajout;
-import solveur.InsertionPPV;
-import solveur.RechercheLocale;
-import solveur.Solveur;
-import solveur.Trivial;
+import solveur.*;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  *
@@ -510,58 +505,14 @@ public class Solutions extends javax.swing.JFrame {
         jLabel9.setText("TECH DAY COST");
         jLabel10.setText("TECH COST");
     }
-    
-    public void modificationJtext(){
-        Solveur solvT = new Ajout();
-        solution = solvT.solve(instance);
-        jTextField1.setText(solution.getInstance().getDataset());
-        jTextField2.setText(solution.getInstance().getNom());
-        jTextField3.setText(String.valueOf(solution.getTruckDistance()));
-        jTextField4.setText(String.valueOf(solution.getNumberTruckDays()));
-        jTextField5.setText(String.valueOf(solution.getNumberTrucksUsed()));
-        jTextField6.setText(String.valueOf(solution.getTechnicianDistance()));
-        jTextField7.setText(String.valueOf(solution.getNumberTechnicianDays()));
-        jTextField8.setText(String.valueOf(solution.getNumberTechniciansUsed()));
-        jTextField9.setText(String.valueOf(solution.getMachineCost()));
-        jTextField10.setText(String.valueOf(solution.getCoutTotal()));
-        jTextField1.setEditable(false);
-        jTextField2.setEditable(false);
-        jTextField3.setEditable(false);
-        jTextField4.setEditable(false);
-        jTextField5.setEditable(false);
-        jTextField6.setEditable(false);
-        jTextField7.setEditable(false);
-        jTextField8.setEditable(false);
-        jTextField9.setEditable(false);
-        jTextField10.setEditable(false);
-    }
-     public void modificationJtext2(){
-        Solveur solvT = new InsertionPPV();
-        solution = solvT.solve(instance);
-        jTextField1.setText(solution.getInstance().getDataset());
-        jTextField2.setText(solution.getInstance().getNom());
-        jTextField3.setText(String.valueOf(solution.getTruckDistance()));
-        jTextField4.setText(String.valueOf(solution.getNumberTruckDays()));
-        jTextField5.setText(String.valueOf(solution.getNumberTrucksUsed()));
-        jTextField6.setText(String.valueOf(solution.getTechnicianDistance()));
-        jTextField7.setText(String.valueOf(solution.getNumberTechnicianDays()));
-        jTextField8.setText(String.valueOf(solution.getNumberTechniciansUsed()));
-        jTextField9.setText(String.valueOf(solution.getMachineCost()));
-        jTextField10.setText(String.valueOf(solution.getCoutTotal()));
-        jTextField1.setEditable(false);
-        jTextField2.setEditable(false);
-        jTextField3.setEditable(false);
-        jTextField4.setEditable(false);
-        jTextField5.setEditable(false);
-        jTextField6.setEditable(false);
-        jTextField7.setEditable(false);
-        jTextField8.setEditable(false);
-        jTextField9.setEditable(false);
-        jTextField10.setEditable(false);
-    }
-      public void modificationJtext3(){
+
+    public void modificationJtext() {
         Solveur solvT = new Trivial();
         solution = solvT.solve(instance);
+        afficherSolution(solution);
+    }
+
+    public void afficherSolution(Solution solution) {
         jTextField1.setText(solution.getInstance().getDataset());
         jTextField2.setText(solution.getInstance().getNom());
         jTextField3.setText(String.valueOf(solution.getTruckDistance()));
@@ -583,32 +534,26 @@ public class Solutions extends javax.swing.JFrame {
         jTextField9.setEditable(false);
         jTextField10.setEditable(false);
     }
-      
-      public void modificationJtext4(){
+
+    public void modificationJtext2() {
+        Solveur solvT = new InsertionPPV();
+        solution = solvT.solve(instance);
+        afficherSolution(solution);
+    }
+
+    public void modificationJtext3() {
+        Solveur solvT = new Ajout();
+        solution = solvT.solve(instance);
+        afficherSolution(solution);
+    }
+
+    public void modificationJtext4() {
         Solveur solvRl = new RechercheLocale();
         solution = solvRl.solve(instance);
-        jTextField1.setText(solution.getInstance().getDataset());
-        jTextField2.setText(solution.getInstance().getNom());
-        jTextField3.setText(String.valueOf(solution.getTruckDistance()));
-        jTextField4.setText(String.valueOf(solution.getNumberTruckDays()));
-        jTextField5.setText(String.valueOf(solution.getNumberTrucksUsed()));
-        jTextField6.setText(String.valueOf(solution.getTechnicianDistance()));
-        jTextField7.setText(String.valueOf(solution.getNumberTechnicianDays()));
-        jTextField8.setText(String.valueOf(solution.getNumberTechniciansUsed()));
-        jTextField9.setText(String.valueOf(solution.getMachineCost()));
-        jTextField10.setText(String.valueOf(solution.getCoutTotal()));
-        jTextField1.setEditable(false);
-        jTextField2.setEditable(false);
-        jTextField3.setEditable(false);
-        jTextField4.setEditable(false);
-        jTextField5.setEditable(false);
-        jTextField6.setEditable(false);
-        jTextField7.setEditable(false);
-        jTextField8.setEditable(false);
-        jTextField9.setEditable(false);
-        jTextField10.setEditable(false);
-      }
-    public void remplirJtext(){
+        afficherSolution(solution);
+    }
+
+    public void remplirJtext() {
         jTextField1.setText(instance.getDataset());
         jTextField2.setText(instance.getNom());
         jTextField3.setText(String.valueOf(instance.getDays()));
